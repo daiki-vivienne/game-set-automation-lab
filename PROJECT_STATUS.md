@@ -55,7 +55,7 @@ GitHubリポジトリ：
 * 現在地を引き継ぐための`PROJECT_STATUS.md`を作成
 * `AGENTS.md`、`PROJECT_STATUS.md`、`.gitignore`をコミット・Push
 * 制作ログDay1〜Day11を作成
-* Day1〜Day11の作業時間を記録（累計36時間45分）
+* 作業時間表を作成
 
 ## 現在の状態
 
@@ -69,6 +69,8 @@ GitHubリポジトリ：
 * ゲーム仕様、プレイヤーから見える挙動、設計方針、テスト方針の変更は、ChatGPT Work側で相談して決める
 * `PROJECT_STATUS.md`は、リポジトリ側の技術的な現在地を記録するために使用する
 * ChatGPT Workがこのファイルを直接読めない場合は、Codexの「ChatGPT Workへの作業報告」で内容を戻す
+* 作業時間は専用の作業時間表のみで管理する
+* `PROJECT_STATUS.md`と制作ログには、開始時刻、終了時刻、制作時間、累計時間を記載しない
 * Skillsは現在の運用を数回試してから、終了処理のSkill化を検討する
 * MCPは現時点では導入しない
 
@@ -96,7 +98,7 @@ GitHubリポジトリ：
 ## 関連記録
 
 * [制作ログ（Day1〜Day11）](https://docs.google.com/document/d/1X6zc0omQqdFbmZOWgythtnpK-Jga4jC-ZSHYnuEgRoA/edit)
-* [作業時間表（Day1〜Day11累計36時間45分）](https://docs.google.com/spreadsheets/d/1He70CnsMwKe-eGSXBvuIYKwaueKuBBzZpusN-AjDOOc/edit)
+* [作業時間表](https://docs.google.com/spreadsheets/d/1He70CnsMwKe-eGSXBvuIYKwaueKuBBzZpusN-AjDOOc/edit)
 
 ## 作業を再開するとき
 

@@ -1,6 +1,6 @@
 # game-set-automation-lab 現在の状況
 
-最終更新：2026-09-26（Day 11）
+最終更新：2026-09-26（Day11）
 
 ## プロジェクト概要
 
@@ -23,9 +23,11 @@ Unity・C#・自動テスト・CI/CDを学び、ゲームSET/SDETを目指すた
 * Universal 3D（URP）
 * C#
 * JetBrains Rider
-* Unity Test Framework
+* Unity Test Framework（導入・動作状態は次回確認）
 * Git / GitHub
 * mainブランチ
+
+Unity、Rider、Gitの環境準備は完了している。
 
 ローカルリポジトリ：
 
@@ -51,6 +53,9 @@ GitHubリポジトリ：
 * 現在使用する`game-set-automation-lab.sln`だけを残した
 * 学習方針と開発ルールを記載した`AGENTS.md`を作成
 * 現在地を引き継ぐための`PROJECT_STATUS.md`を作成
+* `AGENTS.md`、`PROJECT_STATUS.md`、`.gitignore`をコミット・Push
+* 制作ログDay1〜Day11を作成
+* Day1〜Day11の作業時間を記録（累計36時間45分）
 
 ## 現在の状態
 
@@ -58,22 +63,26 @@ GitHubリポジトリ：
 * Unityプロジェクト自体のエラーは確認されていない
 * ゲーム固有のC#コードはまだ実装していない
 * Unityの初期アセットと初期設定のみ存在する
-* `AGENTS.md`と`PROJECT_STATUS.md`は未コミット
-* Riderからのコミット・Pushはまだ実践していない
+* 実装の主担当は開発者本人
+* ChatGPT Workは、仕様・設計・学習支援・制作ログ・作業時間・次回計画を担当する
+* Codexは、リポジトリを参照した相談・既存コードの説明・変更箇所の案内・差分レビュー・テスト実行・エラー調査を担当する
+* ゲーム仕様、プレイヤーから見える挙動、設計方針、テスト方針の変更は、ChatGPT Work側で相談して決める
+* `PROJECT_STATUS.md`は、リポジトリ側の技術的な現在地を記録するために使用する
+* ChatGPT Workがこのファイルを直接読めない場合は、Codexの「ChatGPT Workへの作業報告」で内容を戻す
+* Skillsは現在の運用を数回試してから、終了処理のSkill化を検討する
+* MCPは現時点では導入しない
 
 以前表示された`Token Exchange`エラーは、Unityのオンライン認証通信による一時的なもので、ゲームやC#コードのエラーではない。Clear後に再発していない。
 
 ## 次にやること
 
-1. `AGENTS.md`と`PROJECT_STATUS.md`の内容を確認する
-2. Riderから2つのファイルをコミットする
-3. RiderからGitHubへPushする
-4. `Assets`配下のフォルダ構成を決める
-5. Unity Test Frameworkを使用できる状態にする
-6. 最初に実装する小さなゲームロジックを決める
-7. 最初のC#コードを開発者本人が実装する
-8. 実装したロジックのEditModeテストを作成する
-9. READMEへプロジェクトの目的と開発環境を追記する
+1. `chore/project-structure`ブランチを作成する
+2. `Assets`フォルダを最低限の構成に整理する
+3. Unity Test Frameworkが使用できる状態か確認する
+4. 最初に実装する小さなゲームロジックを決める
+5. 最初のC#コードを開発者本人が実装する
+6. 実装したロジックのEditModeテストを作成する
+7. READMEへプロジェクトの目的と開発環境を追記する
 
 ## 未解決・検討事項
 
@@ -83,6 +92,11 @@ GitHubリポジトリ：
 * Unity Test Frameworkの初期設定
 * CIを導入する時期と構成
 * 自動操作Botの実装方法
+
+## 関連記録
+
+* [制作ログ（Day1〜Day11）](https://docs.google.com/document/d/1X6zc0omQqdFbmZOWgythtnpK-Jga4jC-ZSHYnuEgRoA/edit)
+* [作業時間表（Day1〜Day11累計36時間45分）](https://docs.google.com/spreadsheets/d/1He70CnsMwKe-eGSXBvuIYKwaueKuBBzZpusN-AjDOOc/edit)
 
 ## 作業を再開するとき
 

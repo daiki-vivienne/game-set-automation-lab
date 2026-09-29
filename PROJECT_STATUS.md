@@ -25,7 +25,7 @@ Unity・C#・自動テスト・CI/CDを学び、ゲームSET/SDETを目指すた
 * JetBrains Rider
 * Unity Test Framework 1.6.0（`Packages/manifest.json`に登録済み。Test Runnerは開けるが、テストの認識・実行は未確認）
 * Git / GitHub
-* Day13にPR #1を`main`へマージし、Riderでローカルの`main`を更新済み
+* Day13にPR #1を`main`へマージし、Riderでローカルの`main`を更新した
 
 Unity、Rider、Gitの環境準備は完了している。
 
@@ -61,7 +61,7 @@ GitHubリポジトリ：
 * 上記5フォルダに各1つのasmdefを作成し、親フォルダを含む7つのフォルダと5つのasmdefに対応する`.meta`を確認
 * 5つのasmdefの配置・設定・参照先を確認。両テスト用asmdefのApply後、Unity Editorに赤いエラーは出ていない
 * Day13に構成変更のPR #1を作成。Codexのマージ前レビューとGitHubのCodex Botレビューを確認し、`main`へマージ
-* Riderでローカルの`main`を更新
+* PR #1のマージ後、Riderでローカルの`main`を更新
 * 最初のGame Coreロジックを、固定マップでの上下左右1マス移動と壁判定に決定。ゲーム仕様書とテスト戦略書へルールを反映
 * Day13の制作ログを作成し、作業時間表を更新
 
@@ -69,7 +69,7 @@ GitHubリポジトリ：
 
 * UnityのSampleSceneを開ける
 * Day12に両テスト用asmdefのApply後、Unity Editorに赤いエラーは出ていない（開発者本人の確認）
-* PR #1の構成変更は`main`へ取り込み済み。ローカルの`main`も更新済み（Day13）
+* PR #1の構成変更は`main`へ取り込み済み。マージ後にローカルの`main`を更新したが、その後の`PROJECT_STATUS.md`更新コミットは手元では未取得
 * ゲーム固有のC#コードはまだ実装していない
 * Unityの初期アセットに加え、`Assets/_Project`に`Core`、`Presentation`、`Automation`、`Tests/EditMode`、`Tests/PlayMode`の構成がある
 * asmdefは`Vivienne.GameCore`、`Vivienne.Unity`、`Vivienne.Automation`、`Vivienne.EditModeTests`、`Vivienne.PlayModeTests`の5つ。対応する`.meta`と参照先のGUIDを確認済み
@@ -92,7 +92,7 @@ GitHubリポジトリ：
 
 ## 次にやること
 
-1. 更新済みの`main`から実装用ブランチを作る
+1. Riderで`main`を再度更新し、最新の`main`から実装用ブランチを作る
 2. `AGENTS.md`にコミット・PR文案の日本語／英語の順序と、Codex Botのレビューを日本語にする指示を追加する
 3. 開発者本人が固定マップの1マス移動を`Core`に実装し、対応するEditModeテストを`Tests/EditMode`に作成する
 4. Test Runnerでテストの認識・実行を確認し、結果を記録する

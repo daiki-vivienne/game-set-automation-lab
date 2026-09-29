@@ -1,6 +1,6 @@
 # game-set-automation-lab 現在の状況
 
-最終更新：2026-09-26（Day11）
+最終更新：2026-09-29（Day12）
 
 ## プロジェクト概要
 
@@ -23,9 +23,9 @@ Unity・C#・自動テスト・CI/CDを学び、ゲームSET/SDETを目指すた
 * Universal 3D（URP）
 * C#
 * JetBrains Rider
-* Unity Test Framework（導入・動作状態は次回確認）
+* Unity Test Framework 1.6.0（`Packages/manifest.json`に登録済み。Test Runnerは開けるが、テストの認識・実行は未確認）
 * Git / GitHub
-* mainブランチ
+* 現在の作業ブランチ：`chore/project-structure`
 
 Unity、Rider、Gitの環境準備は完了している。
 
@@ -56,13 +56,21 @@ GitHubリポジトリ：
 * `AGENTS.md`、`PROJECT_STATUS.md`、`.gitignore`をコミット・Push
 * 制作ログDay1〜Day11を作成
 * 作業時間表を作成
+* Day12に`chore/project-structure`ブランチを作成
+* Unity Editorで`Assets/_Project`配下に`Core`、`Presentation`、`Automation`、`Tests/EditMode`、`Tests/PlayMode`を作成
+* 上記5フォルダに各1つのasmdefを作成し、親フォルダを含む7つのフォルダと5つのasmdefに対応する`.meta`を確認
+* 5つのasmdefの配置・設定・参照先を確認。両テスト用asmdefのApply後、Unity Editorに赤いエラーは出ていない
 
 ## 現在の状態
 
 * UnityのSampleSceneを開ける
-* Unityプロジェクト自体のエラーは確認されていない
+* Day12に両テスト用asmdefのApply後、Unity Editorに赤いエラーは出ていない（開発者本人の確認）
 * ゲーム固有のC#コードはまだ実装していない
-* Unityの初期アセットと初期設定のみ存在する
+* Unityの初期アセットに加え、`Assets/_Project`に`Core`、`Presentation`、`Automation`、`Tests/EditMode`、`Tests/PlayMode`の構成がある
+* asmdefは`Vivienne.GameCore`、`Vivienne.Unity`、`Vivienne.Automation`、`Vivienne.EditModeTests`、`Vivienne.PlayModeTests`の5つ。対応する`.meta`と参照先のGUIDを確認済み
+* `Vivienne.GameCore`はUnityエンジンへの参照を無効化。`Vivienne.Unity`と`Vivienne.Automation`は`Vivienne.GameCore`を参照
+* 両テスト用asmdefは`Vivienne.GameCore`、Unity Test Runner、NUnitを参照し、`UNITY_INCLUDE_TESTS`を設定。EditModeはEditor専用、PlayModeは全プラットフォーム対象
+* テストスクリプトはまだない。Test Runnerを開けることと、テストが認識・実行できることは別であり、後者は未確認
 * 実装の主担当は開発者本人
 * ChatGPT Workは、仕様・設計・学習支援・制作ログ・作業時間・次回計画を担当する
 * Codexは、リポジトリを参照した相談・既存コードの説明・変更箇所の案内・差分レビュー・テスト実行・エラー調査を担当する
@@ -78,26 +86,24 @@ GitHubリポジトリ：
 
 ## 次にやること
 
-1. `chore/project-structure`ブランチを作成する
-2. `Assets`フォルダを最低限の構成に整理する
-3. Unity Test Frameworkが使用できる状態か確認する
-4. 最初に実装する小さなゲームロジックを決める
-5. 最初のC#コードを開発者本人が実装する
-6. 実装したロジックのEditModeテストを作成する
-7. READMEへプロジェクトの目的と開発環境を追記する
+1. 最初に実装する小さなゲームロジックをChatGPT Work側で相談して決める
+2. 決めたロジックを開発者本人が`Core`に小さく実装する
+3. そのロジックのEditModeテストを開発者本人が`Tests/EditMode`に作成する
+4. Test Runnerでテストの認識・実行を確認し、結果を記録する
+5. 必要な動作ができた段階でPlayModeテストの対象を検討する
+6. READMEへプロジェクトの目的と開発環境を追記する
 
 ## 未解決・検討事項
 
 * 最初に実装するゲームロジック
-* `Assets`配下の具体的なフォルダ構成
 * ゲーム仕様書とテスト戦略書をリポジトリのどこへ置くか
-* Unity Test Frameworkの初期設定
+* テストスクリプト作成後のTest Runnerでの認識・実行結果
 * CIを導入する時期と構成
 * 自動操作Botの実装方法
 
 ## 関連記録
 
-* [制作ログ（Day1〜Day11）](https://docs.google.com/document/d/1X6zc0omQqdFbmZOWgythtnpK-Jga4jC-ZSHYnuEgRoA/edit)
+* [制作ログ](https://docs.google.com/document/d/1X6zc0omQqdFbmZOWgythtnpK-Jga4jC-ZSHYnuEgRoA/edit)
 * [作業時間表](https://docs.google.com/spreadsheets/d/1He70CnsMwKe-eGSXBvuIYKwaueKuBBzZpusN-AjDOOc/edit)
 
 ## 作業を再開するとき

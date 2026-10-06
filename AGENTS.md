@@ -139,7 +139,8 @@ Codexが最初から完成コードを提示して終わらせるのではなく
 ## 現在地と背景の確認
 
 * 実装の現在地は`PROJECT_STATUS.md`、ローカルの実ファイル、Gitの状態を合わせて確認する。記載と実態が異なる場合は、実ファイル・Gitに基づいて現在地を整理し、仕様や過去の合意との食い違いは明示する
-* 仕様・設計の判断理由が不明、過去の合意を確認する必要がある、記録に食い違いがある場合は、開発者本人からの個別の指示を待たず、Google Driveの関連記録を読み取り確認する
-* 参照先は[Vivienne QA Labの記録フォルダ](https://drive.google.com/drive/folders/18TJtEXtzkT8-hLh6TFMAtqBlVua3gk5F)。日付やテーマから必要な記録を絞って読む。Google Driveの記録は過去の判断・経緯を確認する資料として使う
+* 決定済みのゲーム仕様・設計・テスト方針は、[仕様・設計資料フォルダ](https://drive.google.com/drive/folders/1JPWF1LwqBv_yED0qeqgQlT1r14COcE1Q)の対応する最新資料を読み取り確認する。ゲーム仕様はGAME_SPEC、技術構成・設計はTECH_ARCHITECTURE、テスト方針はTEST_STRATEGYを参照する
+* 判断理由や過去の合意を確認するときは、開発者本人からの個別の指示を待たず、[Vivienne QA Labの記録フォルダ](https://drive.google.com/drive/folders/18TJtEXtzkT8-hLh6TFMAtqBlVua3gk5F)から日付・テーマに合う必要な制作ログを絞って読む。毎回すべてのログを読む必要はない
+* 既存資料の確認だけで解決できる場合は、その内容に沿って進める。資料で解決できない不明点、未決事項、資料間の矛盾、仕様・設計の変更が必要な場合は、論点を整理してChatGPT Workへ相談する
 * 理由が確認できない場合は、推測を当時の決定理由として扱わない。Google Driveを参照できない場合は、その旨を説明し、必要な箇所だけ本人に共有してもらう
 * 制作ログ・復習資料・作業時間表の更新は引き続きChatGPT Workが担当する。Google Driveの参照を理由に、Codexがゲーム仕様や設計方針を勝手に変更しない

@@ -75,5 +75,21 @@ public class FixedMapTest
         Assert.That( map.IsWalkable( 2, 2 ), Is.False );
         Assert.That( map.IsWalkable( 2, 0 ), Is.True );
     }
+
+    [Test]
+    //地図外を調べてもエラーにならず歩けないことを確認する
+
+    public void IsWalkableIsFalse()
+    {
+        // 上段中央は壁、下段中央は床。上下を逆に読む誤りを検出できる配置にする。
+        string[] mapRows = new string[] { "#####", "#...#", "##.##" };
+        // 用意した地図を渡し、読み取りを確かめる対象のFixedMapを作る。
+        FixedMap map = new FixedMap( mapRows );
+
+        Assert.That(map.IsWalkable(5, 1), Is.False);
+        Assert.That( map.IsWalkable( -1, 1 ), Is.False );
+        Assert.That( map.IsWalkable( 2, 3 ), Is.False );
+        Assert.That( map.IsWalkable( 2, -1 ), Is.False );
+    }
     
 }   

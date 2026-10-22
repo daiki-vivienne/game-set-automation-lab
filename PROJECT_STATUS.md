@@ -6,7 +6,7 @@
 
 固定マップの範囲・床判定、B案のGameState.Moveによる上下左右の床移動を実装済み。Day24は本人が壁・マップ外への入力テストに加え、ChangeFacing(Direction direction)とChangeFacingKeepsPositionAndTurnCountを追加した。本人の依頼でCodexが説明コメントを追記した後、2026-10-23に本人がEditModeのRun Allを再実行し、全14件成功を提示画像・保存済みコードで確認。Move本体と既存コンストラクターはDay24には変更していない。初期移動機能の差分を確認し、学習支援方針と実装・テストを別々にコミット。Git用のGitHub認証を本人が登録した後、作業ブランチへのPushと同期確認まで完了した。
 
-次回は保存済みコードとGit状態を照合し、本人とPR作成の区切りを相談する。床移動は各方向1例、壁・マップ外への入力は右方向各1例、向きだけ変更する命令はUpからRight・開始0ターンの1例を確認済み。追加ケースの要否は重複と仕様への影響を見て検討し、次の機能はWorkと相談して決める。
+初期移動機能の[PR #2](https://github.com/daiki-vivienne/game-set-automation-lab/pull/2)はCodex review完了・指摘なしを確認し、本人が2026-10-23にmainへマージ済み。ローカルmainとorigin/mainもマージコミット220f9b6へ同期した。床移動は各方向1例、壁・マップ外への入力は右方向各1例、向きだけ変更する命令はUpからRight・開始0ターンの1例を確認済み。次回は保存状態を照合し、次の機能・追加ケースの要否をWorkと相談する。新しいゲーム・テストコードを書く前に、必要なら次の作業ブランチを作る。
 
 学習支援はAGENTS.mdの「学習者主体の実装」に従い、目的から本人が考える時間を先に取る。詳しい復習・説明方法の改善点はChatGPT Workへの報告と関連記録を参照する。
 
@@ -44,6 +44,7 @@ Unity・C#・自動テスト・CI/CDを学び、ゲームSET/SDETを目指す学
 * 結果：成功14件・失敗0件・スキップ0件。GameStateTestsの8件とFixedMapTestの6件。IsWalkableIsFalseの4方向のAssertは1テストとして数える
 * Day24開始時の既存11件は本人の通過報告あり。壁追加後の12件、マップ外の配置修正後の13件、向きだけ変更する命令追加後の14件成功を提示画像で確認した
 * Codexが本人の依頼でGameState.csとGameStateTests.csに説明コメントのみ追記し、処理・宣言・期待値が変わっていないことを比較確認。その後、本人が再実行した全14件成功を最新画像で確認した。以降、ゲーム・テストコードは変更していない。AGENTS.mdとPROJECT_STATUS.mdの文書差分も確認
+* Codex reviewはPR作成をきっかけに自動実行され、対象c0b5b01で完了・指摘なし・未解決指摘なしを結果データで確認した。2026-10-23にmainへマージ後、c0b5b01と220f9b6の保存済みツリーが完全一致することをGitで確認。マージ後のUnity再実行は行っていない
 
 | テスト | 確認した内容 |
 |---|---|
@@ -80,17 +81,18 @@ IsInsideは範囲確認で、歩行可能かの判定ではない。IsWalkable�
 
 ## Gitと保存状態
 
-* ブランチ：`feature/player-movement`
+* 現在のブランチ：`main`。初期移動機能を統合したマージコミットは`220f9b6bf63e1451d22b047891d1851276ad1747`。マージ直後にローカルmain・origin/main・GitHub側の一致を確認し、その後の変更は現在地文書のみ。最新HEADと同期状態はGitで確認する
 * 2026-10-23に本人の依頼でCodexが差分をレビューし、全文を提示したメッセージでローカルコミットを作成。学習支援方針は`85c41d8`（AGENTS.mdのみ）、初期移動機能は`d1db1f0`（GameState.cs・GameStateTests.cs・FixedMapTest.cs）。Day19のIsWalkableIsFalse追加も含む。ステージしたコードの本文と保存済みコードの一致を確認済み
-* PROJECT_STATUS.mdの確認結果とGit状態は文書専用コミット`8e7bfbc`に保存。その後、この文書のPush待ち表記を更新。最終HEADと作業ツリーの状態はGitで確認する
-* 当初はGitの認証管理に利用可能なGitHubアカウントがなくPushに失敗。本人が通常のPowerShellからGit Credential Managerへログイン登録した後、CodexがPushのdry-run成功を確認し、作業ブランチをPushした。2026-10-23にローカルHEAD・origin/feature/player-movement・GitHub側が`8e7bfbc`で一致することを確認。このPush結果の文書更新も別コミットで保存・Pushする。PRは未作成
-* ローカルmain・origin/main・GitHub側のmainは`d6cd525`。従来の開発ルールは`5dadbf3`でfeatureへ取り込み済み。今回の学習支援方針はfeature上の`85c41d8`に含み、mainへの反映は今後のPR経由で行う想定
-* stashはない。既存変更を削除せず、今回確認した5ファイルだけを上記コミットと文書専用コミットに分けて保存した。無関係なファイル・設定・アセットは変更していない
+* PROJECT_STATUS.mdの確認結果とGit状態は文書専用コミット`8e7bfbc`に保存し、Push完了の記録は`c0b5b01`でコミット・Push済み。PR作成・レビュー・マージと同期の今回の記録には、本人が了承した「現在地文書だけをmainへ直接コミット・Pushする」運用を適用し、新しいPRは作成しない
+* 当初はGitの認証管理に利用可能なGitHubアカウントがなくPushに失敗。本人が通常のPowerShellからGit Credential Managerへログイン登録した後、CodexがPushのdry-run成功を確認し、作業ブランチをPushした。2026-10-23にローカルHEAD・origin/feature/player-movement・GitHub側が`c0b5b01`で一致することを確認
+* [PR #2](https://github.com/daiki-vivienne/game-set-automation-lab/pull/2)：`feature/player-movement` → `main`。12ファイルの変更、14件成功の確認結果と未確認範囲を日本語・英語で記載。PR本文は作成者自身の視点へ修正済み。Codexの自動レビュー完了後、本人が通常のマージで取り込んだ。マージコミットは`220f9b6`（固定マップと初期移動を統合 / merge fixed map and basic movement）
+* `85c41d8`のAGENTS.mdの学習支援方針もPR #2でmainへ反映済み。作業ブランチ`feature/player-movement`は`c0b5b01`のまま残し、削除していない。PR本文・コミット文を作成者の視点で書く方針をAGENTS.mdへ追記する件は、本人の依頼により今後の文書見直し時の候補として保留
+* stashはない。未コミットだったPROJECT_STATUS.mdは内容を保持したままmainへ切り替え、マージ後の現在地へ更新した。無関係なファイル・設定・アセットは変更していない
 * ゲーム・テストコードは本人が記述。Codexのコードへの直接編集は、本人が依頼した説明コメントのみ
 
 ## 未完了と今後の作業
 
-1. コメント追記後の既存14件成功、差分レビュー、作業ブランチのPushは完了済み。次回はGit状態を確認し、PR作成を本人と次の区切りとして相談する
+1. 初期移動機能は既存14件成功、差分レビュー、Push、Codex review完了・指摘なし、PR #2のmainへのマージとローカル同期まで完了。次回は文書の保存とGit状態を照合し、次の機能・確認範囲をWorkで相談する。ゲーム・テストコードの変更は新しい作業ブランチで進める
 2. 壁・マップ外への入力と向きだけ変更する命令は各1例を確認済み。他方向・非0ターンなどへの拡張は必要性を見て検討する。敵の占有判定・戦闘は今回の範囲外
 3. 必要ならテスト名とコメントを目的に合わせて整理する。FloorCellsWalkableは床・壁とYと行番号の対応を確認している。IsWalkableIsFalse内の地図説明コメントはコピー元の上下対応の説明が残っている
 4. 移動と壁判定の確認後、Unityでの表示・入力接続、PlayModeテストの対象を検討する

@@ -1,120 +1,109 @@
 # game-set-automation-lab 現在の状況
 
-最終更新：2026-09-29（Day13）
+最終更新：2026-10-23（Day24終了・2026-10-22開始）
 
-## プロジェクト概要
+## 現在地と次回の開始点
 
-Unity・C#・自動テスト・CI/CDを学び、ゲームSET/SDETを目指すための学習兼ポートフォリオ。
+固定マップの範囲・床判定、B案のGameState.Moveによる上下左右の床移動を実装済み。Day24は本人が壁・マップ外への入力テストに加え、ChangeFacing(Direction direction)とChangeFacingKeepsPositionAndTurnCountを追加した。本人の依頼でCodexが説明コメントを追記した後、2026-10-23に本人がEditModeのRun Allを再実行し、全14件成功を提示画像・保存済みコードで確認。Move本体と既存コンストラクターはDay24には変更していない。初期移動機能の差分を確認し、学習支援方針と実装・テストを別々にコミット。Git用のGitHub認証を本人が登録した後、作業ブランチへのPushと同期確認まで完了した。
 
-クリスタル洞窟を舞台にした、ターン制ローグライクゲームを制作する予定。
+次回は保存済みコードとGit状態を照合し、本人とPR作成の区切りを相談する。床移動は各方向1例、壁・マップ外への入力は右方向各1例、向きだけ変更する命令はUpからRight・開始0ターンの1例を確認済み。追加ケースの要否は重複と仕様への影響を見て検討し、次の機能はWorkと相談して決める。
 
-ゲームの完成だけでなく、以下を重視する。
+学習支援はAGENTS.mdの「学習者主体の実装」に従い、目的から本人が考える時間を先に取る。詳しい復習・説明方法の改善点はChatGPT Workへの報告と関連記録を参照する。
 
-* テストしやすい設計
-* Seedによる再現性
-* Unit・Integration・E2Eテスト
-* 自動操作Bot
-* CIによる自動ビルドとテスト
-* 不具合の再現・調査・改善
+実装・テストは本人が担当し、Codexは説明・レビュー・確認を支援する。詳しい運用はAGENTS.md、決定済みの仕様・設計・テスト方針は末尾の仕様資料、過去の学習・判断の経緯は必要なGoogle Drive記録を参照する。
 
-## 開発環境
+## プロジェクトと環境
 
-* Unity 6.3 LTS（6000.3.24f1）
-* Universal 3D（URP）
-* C#
-* JetBrains Rider
-* Unity Test Framework 1.6.0（`Packages/manifest.json`に登録済み。Test Runnerは開けるが、テストの認識・実行は未確認）
-* Git / GitHub
-* Day13にPR #1を`main`へマージし、Riderでローカルの`main`を更新した
+Unity・C#・自動テスト・CI/CDを学び、ゲームSET/SDETを目指す学習兼ポートフォリオ。クリスタル洞窟を舞台にしたターン制ローグライクを制作予定。
 
-Unity、Rider、Gitの環境準備は完了している。
+* Unity 6.3 LTS（6000.3.24f1）、Universal 3D（URP）
+* C#、JetBrains Rider、Unity Test Framework 1.6.0
+* ローカル：`C:\Users\draqu\Desktop\vivienne-qa-lab\game-set-automation-lab`
+* GitHub：`daiki-vivienne/game-set-automation-lab`
+* 構成：`Assets/_Project`配下にCore、Presentation、Automation、Tests/EditMode、Tests/PlayMode
+* asmdef：Vivienne.GameCore、Vivienne.Unity、Vivienne.Automation、Vivienne.EditModeTests、Vivienne.PlayModeTests
+* CoreはUnityEngineへの依存なし。EditModeはEditor専用でCore・Unity Test Runner・NUnitを参照し、UNITY_INCLUDE_TESTSを設定
+* UnityのForce Text・Visible Meta Files・Rider接続とテスト基盤は準備済み。構成変更のPR #1はmainへ取り込み済み
 
-ローカルリポジトリ：
+## 実装済みの機能
 
-`C:\Users\draqu\Desktop\vivienne-qa-lab\game-set-automation-lab`
+| ファイル | 現在できること |
+|---|---|
+| Assets/_Project/Core/Direction.cs | Up・Down・Left・Rightを表す公開enum |
+| Assets/_Project/Core/GameState.cs | 初期状態と読み取り専用プロパティ。Moveは方向と地図を受け取り、歩ける場合だけ移動・ターン更新。ChangeFacingは方向だけ受け取り、位置・ターン数を変えず向きを更新 |
+| Assets/_Project/Core/FixedMap.cs | 文字列配列で地図を保持。Height・Width、IsInside(x, y)の範囲確認、IsWalkable(x, y)の床判定 |
+| Assets/_Project/Tests/EditMode/GameStateTests.cs | 初期状態、4方向の床移動、壁・マップ外への入力、ChangeFacingKeepsPositionAndTurnCountの計8件 |
+| Assets/_Project/Tests/EditMode/FixedMapTest.cs | HeightAndWidthAreCorrect、EdgePositionsAreInsideMap、OutsidePositionsAreNotInsideMap、IsWalkableIsTrue、FloorCellsWalkable、IsWalkableIsFalseの6件 |
 
-GitHubリポジトリ：
+固定マップと左右移動のテスト用地図は3行・横幅5。上下移動と壁・マップ外への入力には4行・横幅5の地図を使用し、各行は同じ長さ。本番マップの大きさ・配置を決めたものではない。上下移動の地図には縦に隣り合う床がある。マップ外のテストでは(4, 1)を床にした専用配置から(5, 1)への入力を試す。本番地図の外周を決めるものではなく、Coreの地図外への移動禁止ルールを確認するための配置である。高さと幅を異なる値にし、幅の処理が誤って行数を返しても区別できるようにしている。FloorCellsWalkableでは上段中央を壁、下段中央を床とし、上下の行を取り違えてもテストで区別できる配置にしている。
 
-`daiki-vivienne/game-set-automation-lab`
+## 最新の確認結果
 
-## 完了したこと
+* 確認日：2026-10-23（Day24）
+* 方法：本人がUnity Test RunnerのEditModeでRun Allを実行。Codexは保存済みコードと提示画像で確認。コマンドライン実行は行っていない
+* 結果：成功14件・失敗0件・スキップ0件。GameStateTestsの8件とFixedMapTestの6件。IsWalkableIsFalseの4方向のAssertは1テストとして数える
+* Day24開始時の既存11件は本人の通過報告あり。壁追加後の12件、マップ外の配置修正後の13件、向きだけ変更する命令追加後の14件成功を提示画像で確認した
+* Codexが本人の依頼でGameState.csとGameStateTests.csに説明コメントのみ追記し、処理・宣言・期待値が変わっていないことを比較確認。その後、本人が再実行した全14件成功を最新画像で確認した。以降、ゲーム・テストコードは変更していない。AGENTS.mdとPROJECT_STATUS.mdの文書差分も確認
 
-* GitHubリポジトリをローカルへClone
-* Unityプロジェクトをリポジトリ直下へ配置
-* Unity向け`.gitignore`を設定
-* Unity初期プロジェクトをコミット・Push
-* Unityプロジェクトが正常に起動することを確認
-* UnityのAsset Serializationを`Force Text`に設定
-* UnityのVersion Controlを`Visible Meta Files`に設定
-* Unityの外部スクリプトエディターをRiderに設定
-* Unity Hubへ正しいプロジェクトフォルダを登録
-* Riderから正しいソリューションを開けることを確認
-* 古い`GameSetAutomationLab.sln`を削除
-* 現在使用する`game-set-automation-lab.sln`だけを残した
-* 学習方針と開発ルールを記載した`AGENTS.md`を作成
-* 現在地を引き継ぐための`PROJECT_STATUS.md`を作成
-* `AGENTS.md`、`PROJECT_STATUS.md`、`.gitignore`をコミット・Push
-* 制作ログDay1〜Day11を作成
-* 作業時間表を作成
-* Day12に`chore/project-structure`ブランチを作成
-* Unity Editorで`Assets/_Project`配下に`Core`、`Presentation`、`Automation`、`Tests/EditMode`、`Tests/PlayMode`を作成
-* 上記5フォルダに各1つのasmdefを作成し、親フォルダを含む7つのフォルダと5つのasmdefに対応する`.meta`を確認
-* 5つのasmdefの配置・設定・参照先を確認。両テスト用asmdefのApply後、Unity Editorに赤いエラーは出ていない
-* Day13に構成変更のPR #1を作成。Codexのマージ前レビューとGitHubのCodex Botレビューを確認し、`main`へマージ
-* PR #1のマージ後、Riderでローカルの`main`を更新
-* 最初のGame Coreロジックを、固定マップでの上下左右1マス移動と壁判定に決定。ゲーム仕様書とテスト戦略書へルールを反映
-* Day13の制作ログを作成し、作業時間表を更新
-* `AGENTS.md`にコミット・PRの表記順、PR本文の項目、日本語レビューと進捗文書の更新基準を反映
+| テスト | 確認した内容 |
+|---|---|
+| InitialStateIsSet | 作成直後のX=1、Y=1、Facing=Up、TurnCount=0 |
+| MoveRightOnFloorUpdatesState | 隣り合う床の地図で(1, 1)・Up・0ターンから右へ移動し、X=2・Y=1・Facing=Right・TurnCount=1 |
+| MoveLeftOnFloorUpdatesState | 隣り合う床の地図で(2, 1)・Up・0ターンから左へ移動し、X=1・Y=1・Facing=Left・TurnCount=1 |
+| MoveUpOnFloorUpdatesState | 縦に隣り合う床の地図で(2, 1)・Right・0ターンから上へ移動し、X=2・Y=2・Facing=Up・TurnCount=1 |
+| MoveDownOnFloorUpdatesState | 同じ配置の地図で(2, 2)・Up・0ターンから下へ移動し、X=2・Y=1・Facing=Down・TurnCount=1 |
+| MoveIntoWallOnlyChangesFacing | (3, 1)の床・Up・0ターンから右隣(4, 1)の壁へ入力し、X=3・Y=1・Facing=Right・TurnCount=0 |
+| MoveOutsideMapOnlyChangesFacing | 端の床(4, 1)・Up・0ターンから右外(5, 1)へ入力し、X=4・Y=1・Facing=Right・TurnCount=0 |
+| ChangeFacingKeepsPositionAndTurnCount | (2, 1)・Up・0ターンでRightを向く命令を渡し、X=2・Y=1・Facing=Right・TurnCount=0 |
+| HeightAndWidthAreCorrect | 渡した地図の高さ3・横幅5 |
+| EdgePositionsAreInsideMap | (0, 0)、左端(0, 1)、右端(4, 1)、上端(2, 2)、下端(2, 0)でtrue |
+| OutsidePositionsAreNotInsideMap | 右外(5, 1)、左外(-1, 1)、上外(2, 3)、下外(2, -1)でfalse |
+| IsWalkableIsTrue | 床(1, 1)でIsWalkableがtrueを返す |
+| FloorCellsWalkable | 上段中央の壁(2, 2)でfalse、下段中央の床(2, 0)でtrue |
+| IsWalkableIsFalse | 右外(5, 1)、左外(-1, 1)、上外(2, 3)、下外(2, -1)でIsWalkableが例外を出さずfalseを返す |
 
-## 現在の状態
+IsInsideは範囲確認で、歩行可能かの判定ではない。IsWalkableは範囲確認後にHeight - 1 - yで行を選び、Xの位置の文字が床かを比較する。地図外では文字を読む前にfalseを返す。4方向の地図外確認まで完了。ゲーム・テストコードは本人が実装し、Codexは説明・レビュー・結果確認・現在地の記録を行った。
 
-* UnityのSampleSceneを開ける
-* Day12に両テスト用asmdefのApply後、Unity Editorに赤いエラーは出ていない（開発者本人の確認）
-* PR #1の構成変更は`main`へ取り込み済み。マージ後にローカルの`main`を更新したが、その後の`PROJECT_STATUS.md`更新コミットは手元では未取得
-* ゲーム固有のC#コードはまだ実装していない
-* Unityの初期アセットに加え、`Assets/_Project`に`Core`、`Presentation`、`Automation`、`Tests/EditMode`、`Tests/PlayMode`の構成がある
-* asmdefは`Vivienne.GameCore`、`Vivienne.Unity`、`Vivienne.Automation`、`Vivienne.EditModeTests`、`Vivienne.PlayModeTests`の5つ。対応する`.meta`と参照先のGUIDを確認済み
-* `Vivienne.GameCore`はUnityエンジンへの参照を無効化。`Vivienne.Unity`と`Vivienne.Automation`は`Vivienne.GameCore`を参照
-* 両テスト用asmdefは`Vivienne.GameCore`、Unity Test Runner、NUnitを参照し、`UNITY_INCLUDE_TESTS`を設定。EditModeはEditor専用、PlayModeは全プラットフォーム対象
-* テストスクリプトはまだない。Test Runnerを開けることと、テストが認識・実行できることは別であり、後者は未確認
-* 最初の移動ルール：入力方向を向き、歩行可能な空きマスなら1マス進んで1ターン消費する。壁・マップ外・敵のいるマスでは向きだけ変わり、位置とターン数は変わらない。敵への移動入力は自動攻撃にならない
-* 実装の主担当は開発者本人
-* ChatGPT Workは、仕様・設計・学習支援・制作ログ・作業時間・次回計画を担当する
-* Codexは、リポジトリを参照した相談・既存コードの説明・変更箇所の案内・差分レビュー・テスト実行・エラー調査を担当する
-* ゲーム仕様、プレイヤーから見える挙動、設計方針、テスト方針の変更は、ChatGPT Work側で相談して決める
-* `PROJECT_STATUS.md`は、リポジトリ側の技術的な現在地を記録するために使用する
-* ChatGPT Workがこのファイルを直接読めない場合は、Codexの「ChatGPT Workへの作業報告」で内容を戻す
-* 作業時間は専用の作業時間表のみで管理する
-* `PROJECT_STATUS.md`と制作ログには、開始時刻、終了時刻、制作時間、累計時間を記載しない
-* Skillsは現在の運用を数回試してから、終了処理のSkill化を検討する
-* MCPは現時点では導入しない
+## 決定済みの仕様と前提
 
-以前表示された`Token Exchange`エラーは、Unityのオンライン認証通信による一時的なもので、ゲームやC#コードのエラーではない。Clear後に再発していない。
+* 固定マップで上下左右へ1マス移動。右でX増加、左でX減少、上でY増加、下でY減少。原点は左下のマス(0, 0)
+* 文字地図は上から行順に保存する。この保存順とYの増加方向が逆なので、範囲内のYに対する行番号はHeight - 1 - yで求める。IsWalkable内で変換を実装済み
+* 移動入力を受けると、移動先にかかわらず入力方向を向く。歩行可能な空きマスなら1マス進み、ターン数を1増やす
+* 壁・マップ外・敵のいるマスでは向きだけ変わり、位置とターン数は変わらない。敵への移動入力は自動攻撃にせず、攻撃ボタンでのみ攻撃する
+* 向きだけ変更する命令は、位置とターン数を変えない
+* マップ外かを確認してから地形を参照する
+* Day21のWork相談でB案を採用。移動メソッドはGameStateに置き、移動のたびに方向とFixedMapを受け取る。同じ地図では用意済みの同じFixedMapインスタンスを渡す。地形判定はFixedMap.IsWalkable、位置・向き・ターン数の更新はGameStateが担当。現在のGameStateコンストラクターは変更しない
+* B案の理由は、既存コンストラクター・初期状態テストを維持して移動を小さく追加できること。Bは実際のゲームにも使える設計で、Aへの変更を前提としない。判断と理由はTECH_ARCHITECTURE_v0.1.mdの4.2節にWorkが記録し、2026-10-20にCodexが読み取り確認済み
+* Game Coreは通常のC#とし、UnityEngineに依存させない。キー入力・画面表示は後で接続し、今回はテストから命令を渡す
+* 敵・戦闘・斜め移動・ランダム生成・Bot・CIは今回の範囲外
+* 座標・原点・文字地図の保存方針は本人が了承し、ChatGPT Workへ共有済み
 
-## 次にやること
+## Gitと保存状態
 
-1. Riderで`main`を再度更新し、最新の`main`から実装用ブランチを作る
-2. 開発者本人が固定マップの1マス移動を`Core`に実装し、対応するEditModeテストを`Tests/EditMode`に作成する
-3. Test Runnerでテストの認識・実行を確認し、結果を記録する
-4. 必要な動作ができた段階でPlayModeテストの対象を検討する
-5. READMEへプロジェクトの目的と開発環境を追記する
+* ブランチ：`feature/player-movement`
+* 2026-10-23に本人の依頼でCodexが差分をレビューし、全文を提示したメッセージでローカルコミットを作成。学習支援方針は`85c41d8`（AGENTS.mdのみ）、初期移動機能は`d1db1f0`（GameState.cs・GameStateTests.cs・FixedMapTest.cs）。Day19のIsWalkableIsFalse追加も含む。ステージしたコードの本文と保存済みコードの一致を確認済み
+* PROJECT_STATUS.mdの確認結果とGit状態は文書専用コミット`8e7bfbc`に保存。その後、この文書のPush待ち表記を更新。最終HEADと作業ツリーの状態はGitで確認する
+* 当初はGitの認証管理に利用可能なGitHubアカウントがなくPushに失敗。本人が通常のPowerShellからGit Credential Managerへログイン登録した後、CodexがPushのdry-run成功を確認し、作業ブランチをPushした。2026-10-23にローカルHEAD・origin/feature/player-movement・GitHub側が`8e7bfbc`で一致することを確認。このPush結果の文書更新も別コミットで保存・Pushする。PRは未作成
+* ローカルmain・origin/main・GitHub側のmainは`d6cd525`。従来の開発ルールは`5dadbf3`でfeatureへ取り込み済み。今回の学習支援方針はfeature上の`85c41d8`に含み、mainへの反映は今後のPR経由で行う想定
+* stashはない。既存変更を削除せず、今回確認した5ファイルだけを上記コミットと文書専用コミットに分けて保存した。無関係なファイル・設定・アセットは変更していない
+* ゲーム・テストコードは本人が記述。Codexのコードへの直接編集は、本人が依頼した説明コメントのみ
 
-## 未解決・検討事項
+## 未完了と今後の作業
 
-* ゲーム仕様書とテスト戦略書をリポジトリのどこへ置くか
-* テストスクリプト作成後のTest Runnerでの認識・実行結果
-* CIを導入する時期と構成
-* 自動操作Botの実装方法
+1. コメント追記後の既存14件成功、差分レビュー、作業ブランチのPushは完了済み。次回はGit状態を確認し、PR作成を本人と次の区切りとして相談する
+2. 壁・マップ外への入力と向きだけ変更する命令は各1例を確認済み。他方向・非0ターンなどへの拡張は必要性を見て検討する。敵の占有判定・戦闘は今回の範囲外
+3. 必要ならテスト名とコメントを目的に合わせて整理する。FloorCellsWalkableは床・壁とYと行番号の対応を確認している。IsWalkableIsFalse内の地図説明コメントはコピー元の上下対応の説明が残っている
+4. 移動と壁判定の確認後、Unityでの表示・入力接続、PlayModeテストの対象を検討する
+5. ゲーム仕様書・テスト戦略書のリポジトリ内の配置、README追記、CI・Botの導入時期は今後の検討事項
 
-## 関連記録
+行末の余分な空白などの体裁は後で見直す対象。未決のゲーム仕様や大きな設計判断は、選択肢と影響を整理してChatGPT Workで相談する。
 
-* [制作ログ（Day13）](https://docs.google.com/document/d/1ksAZwAt-A6k_rbg475j3aQe5Dt1U60L1cWRbszWz9GE/edit)
+## 関連記録と再開方法
+
+* [仕様・設計資料フォルダ](https://drive.google.com/drive/folders/1JPWF1LwqBv_yED0qeqgQlT1r14COcE1Q)：決定済みのゲーム仕様はGAME_SPEC、設計はTECH_ARCHITECTURE、テスト方針はTEST_STRATEGYの対応する最新資料を参照。2026-10-22のDay24開始時に各v0.1資料の今回に関わる箇所とTECH_ARCHITECTUREの4.2節を読み取り確認済み
+* [TECH_ARCHITECTURE_v0.1.md](https://drive.google.com/file/d/10wfhZBM1yn0YHzlrLL0v2yc-4tp5_Ab0/view?usp=drivesdk)：4.2節にGameStateでの移動処理とB案の受け渡し方針・採用理由を記録済み
+* [Vivienne QA Labの記録フォルダ](https://drive.google.com/drive/folders/18TJtEXtzkT8-hLh6TFMAtqBlVua3gk5F)
+* [制作ログ（Day23）](https://docs.google.com/document/d/1y2b-Kl2vRceaZD7lxFpAy3DzCnPGxTxq_dybkB3mfmM/edit?pli=1&tab=t.0#heading=h.lwvrukg4j2qs)
 * [作業時間表](https://docs.google.com/spreadsheets/d/1He70CnsMwKe-eGSXBvuIYKwaueKuBBzZpusN-AjDOOc/edit)
 
-## 作業を再開するとき
-
-1. `AGENTS.md`を読む
-2. この`PROJECT_STATUS.md`を読む
-3. Gitの変更状況を確認する
-4. Unityでエラーが出ていないことを確認する
-5. 「次にやること」の先頭から再開する
+再開時はAGENTS.mdとこの文書を読み、Gitの状態・保存済みコード・Unityの確認状況を照合する。背景が必要なら、AGENTS.mdに従ってDriveの関連記録を読み取り確認する。制作ログ・復習資料・作業時間表の更新はChatGPT Workが担当し、この文書には作業時間を記載しない。

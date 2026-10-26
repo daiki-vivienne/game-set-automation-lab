@@ -105,7 +105,7 @@ IsInsideは範囲確認で、歩行可能かの判定ではない。IsWalkable�
 * [仕様・設計資料フォルダ](https://drive.google.com/drive/folders/1JPWF1LwqBv_yED0qeqgQlT1r14COcE1Q)：決定済みのゲーム仕様はGAME_SPEC、設計はTECH_ARCHITECTURE、テスト方針はTEST_STRATEGYの対応する最新資料を参照。2026-10-22のDay24開始時に各v0.1資料の今回に関わる箇所とTECH_ARCHITECTUREの4.2節を読み取り確認済み
 * [TECH_ARCHITECTURE_v0.1.md](https://drive.google.com/file/d/10wfhZBM1yn0YHzlrLL0v2yc-4tp5_Ab0/view?usp=drivesdk)：4.2節にGameStateでの移動処理とB案の受け渡し方針・採用理由を記録済み
 * [Vivienne QA Labの記録フォルダ](https://drive.google.com/drive/folders/18TJtEXtzkT8-hLh6TFMAtqBlVua3gk5F)
-* [制作ログ（Day23）](https://docs.google.com/document/d/1y2b-Kl2vRceaZD7lxFpAy3DzCnPGxTxq_dybkB3mfmM/edit?pli=1&tab=t.0#heading=h.lwvrukg4j2qs)
+* [制作ログ（Day24）](https://docs.google.com/document/d/1e9YuRkN-O7SCJHZJAl5o2cZu2l9oBr9ichaelOCgE0c/edit?pli=1&tab=t.0#heading=h.clobmuuk62bd)
 * [作業時間表](https://docs.google.com/spreadsheets/d/1He70CnsMwKe-eGSXBvuIYKwaueKuBBzZpusN-AjDOOc/edit)
 
 再開時はAGENTS.mdとこの文書を読み、Gitの状態・保存済みコード・Unityの確認状況を照合する。背景が必要なら、AGENTS.mdに従ってDriveの関連記録を読み取り確認する。制作ログ・復習資料・作業時間表の更新はChatGPT Workが担当し、この文書には作業時間を記載しない。

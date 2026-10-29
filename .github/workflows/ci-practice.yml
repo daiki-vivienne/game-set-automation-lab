@@ -1,0 +1,15 @@
+name: CI Practice
+
+on:
+  push:
+
+jobs:
+  editmode:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: プロジェクトを取得
+        uses: actions/checkout@v7
+      - name: メッセージを表示
+        run: echo "CI practice"
+      - name: 取得したフォルダの中身を確認する
+        run: ls Assets/_Project/Tests

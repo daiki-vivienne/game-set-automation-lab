@@ -1,14 +1,14 @@
 # game-set-automation-lab 現在の状況
 
-最終更新：2026-10-28（Day27終了）
+最終更新：2026-10-29（Day28、CI練習の実行準備）
 
 ## 現在地と次回の開始点
 
-進行中の対象はROADMAPのMilestone 2「最初のCI」。Day27は本人が手元のテスト確認手順を日本語で整理し、「変更によって既存のコードが壊れていないか」を確認する目的を挙げた。Codexが空の`.github/editmode-tests-learning.yml`を用意し、本人が説明・項目名・文法のヒントと部分例を使って、表示名、Pushのきっかけ、ジョブ、実行環境、echoによるメッセージ表示を記述・修正した。表示名`EditMode Tests`は本人が選択。ジョブ識別名・実行環境・echo命令はCodexが提示した条件であり、独力で設計したとは扱わない。
+進行中の対象はROADMAPのMilestone 2「最初のCI」。Day28はDay27の練習設定に、プロジェクト取得とTestsフォルダの一覧表示を本人が追加した。本人がTestsフォルダを確認対象に挙げ、Codexが`uses`・`actions/checkout@v7`・`ls Assets/_Project/Tests`を提示し、本人がステップの表示名を付けて記述・修正した。本人がRiderで練習ファイルを`.github/workflows/ci-practice.yml`へ移動・名前変更し、Workflow表示名をCodexの提案した`CI Practice`に変更した。設定を独力で設計したとは扱わない。
 
-練習ファイルはactionlint 1.7.12で構文検証を通過した。`.github/workflows/`の外に置いているため自動実行対象ではなく、echo・Unity・CIはいずれも未実行。Unityテストを起動する処理はまだ追加していない。既存の`.github/workflows/editmode-tests.yml`はCodex作成の未追跡案として保持し、本人の作成・理解確認済みの成果に含めない。ゲーム・テストコードは変更していない。
+練習ファイルはactionlint 1.7.12で構文検証を通過した。GitHub Actionsが認識する配置へ変更したが、まだCommit・Pushしておらず、GitHub上の3手順の実行結果は未確認。Unityテストを起動する処理はまだ追加していない。既存の`.github/workflows/editmode-tests.yml`はCodex作成の未追跡案として保持し、保存・実行対象から外す。ゲーム・テストコードは変更していない。
 
-次回は、同じ行に値を書く場合と次の行へ入れ子の内容を書く場合、stepsの一覧、echoの役割を短く確認してから、実行内容を小さく発展させる。関連する説明と数項目の課題をまとめて提示し、本人が記述した内容をレビュー・修正する単位で進める。YAMLの概念やWorkflow全体の理解が定着したとはまだ扱わない。具体的な支援手順はDay26に更新したAGENTS.mdとTEST_STRATEGYの16・23節を参照。表示・入力接続はMilestone 3で扱う。
+次は保存対象と実行内容を共有し、本人の依頼後にCommit・Pushして、GitHub上で「取得・echo・Tests一覧表示」の3手順とログを確認する。これはUnityテストの成功とは区別する。その後、Unityテストの接続を小さく進める。関連する説明と数項目の課題をまとめて提示し、本人の記述後にレビュー・修正する。YAMLやWorkflow全体の理解が定着したとはまだ扱わない。支援手順はAGENTS.mdとTEST_STRATEGYの16・23節を参照。表示・入力接続はMilestone 3で扱う。
 
 ## プロジェクトと環境
 
@@ -38,6 +38,7 @@ Unity・C#・自動テスト・CI/CDを学び、ゲームSET/SDETを目指す学
 ## 最新の確認結果
 
 * 最新のUnity確認はDay25（2026-10-26分、確認日2026-10-27）のローカル実行。本人がUnity Test RunnerのEditModeで実行し、成功14件・失敗0件・スキップ0件を提示画像と保存済みTestResults.xmlでCodexが確認した。XMLはtotal=14、result=Passed、passed=14、failed=0、skipped=0、inconclusive=0。Console画像には通常ログ3件が表示され、赤いエラーは見当たらなかった
+* Day28は本人がPowerShellから移動前の練習ファイルにactionlint 1.7.12を実行し、終了コード0を画面で確認した。Codexも移動・表示名変更後の`.github/workflows/ci-practice.yml`を同じツールで検証し、終了コード0。差分チェックも通過した。GitHub上の処理、echo・ls、Unityテストはいずれも未実行
 * Day27は本人が書いた`.github/editmode-tests-learning.yml`に対し、Codexがactionlint 1.7.12を実行し、終了コード0で構文検証を通過した。これはecho・Unityテスト・CIの実行成功を示さない。Day27はUnity・CIの再実行をしていない
 * 対象はGameStateTestsの8件とFixedMapTestの6件。IsWalkableIsFalseの4方向のAssertは1テストとして数える。Day25の確認以降、ゲーム・テストコードは変更していない。Codexによるコマンドライン実行はしていない
 * Day26は運用文書の更新と保存のみ。Unity・CIを実行していない。CIでの認証成功、意図したテストの実行、意図的な失敗の検出・復旧後の成功は未確認
@@ -80,7 +81,7 @@ IsInsideは範囲確認で、歩行可能かの判定ではない。IsWalkable�
 
 ## CIの事前準備とWorkflow案
 
-* Day27に本人が記述した`.github/editmode-tests-learning.yml`を追加。Codexが用意した空ファイルへ、本人が段階的なヒントを使って記述した練習用の設定で、`.github/workflows/`の外に保持する。内容はPushをきっかけとするUbuntu 24.04上のecho作業までで、Unityテスト実行はまだ含まない。構文検証のみ通過し、実行結果は未確認
+* Day27の練習ファイルを、Day28に本人が`.github/workflows/ci-practice.yml`へ移動した。表示名は`CI Practice`。PushをきっかけにUbuntu 24.04で`actions/checkout@v7`による取得、echo、`ls Assets/_Project/Tests`の3手順を実行する設定。Unityテスト実行・Unity用Secretsの利用は含まない。構文検証のみ通過し、実行結果は未確認
 * `.github/workflows/editmode-tests.yml`はDay25にCodexが作成した未追跡案。Day26も本文と未追跡状態を保持し、編集・コミット・Push・CI実行はしない
 * 案の実行対象はブランチへのPushとmain向けPRでのEditModeのみ。GitHub-hosted Ubuntu 24.04とGameCIを使い、外部forkのPRはUnity用Secretsが渡らないためジョブをスキップする
 * Unity版はProjectVersion.txtから読み、`unityci/editor:ubuntu-6000.3.24f1-base-3.2.2`の公開をDay25に確認済み。ActionはコミットSHA、GameCI CLIはv0.1.72へ固定した案を保持する
@@ -90,19 +91,20 @@ IsInsideは範囲確認で、歩行可能かの判定ではない。IsWalkable�
 
 ## Gitと保存状態
 
-確認日：2026-10-28（Day27、JST）。以下の文書保存はDay26に実施したもの。
+確認日：2026-10-29（JST）。Day27の保存結果と、Day26の文書保存・同期を区別して記録する。
 
-* Day27の保存方針：本人の依頼により、練習ファイル`.github/editmode-tests-learning.yml`とPROJECT_STATUS.mdを`ci/editmode-tests`のローカルコミットにまとめる。開始時のHEADは`9842c601416c8e329489b72ef6f3abf7770f3076`。開始時からの現在地文書の追記は保持し、Day27の到達点を統合した。既存のCodex作成案は未追跡のまま保存対象から外す。Push・PR作成は行わない。保存したコミットIDはGit履歴と終了報告で確認する
+* Day27の保存結果：`ci/editmode-tests`で練習ファイル`.github/editmode-tests-learning.yml`とPROJECT_STATUS.mdを`3a78bff`（Workflowの基本設定を練習 / practice basic workflow configuration）へローカルコミット済み。開始時からの現在地文書の追記を保持し、Day27の到達点を統合して保存した。Push・PR作成・mainへのマージは未実施
+* Day28の作業状態：HEADは`3a78bff`。練習ファイルの移動・名前変更がステージ済みだが、ステージには変更前の表示名が残っており、コミット時に最新版を登録し直す必要がある。PROJECT_STATUS.mdの既存の制作ログリンク更新・保存状態補正とDay28の現在地更新は未コミット。未追跡ファイルは既存のCodex作成案`.github/workflows/editmode-tests.yml`のみで、保存対象から外す
 
 * 文書保存：本人承認により、確認済みの`AGENTS.md`とDay26終了時点の現在地文書だけを一時worktreeからmainへ直接コミット・Push済み。コミットは`9842c601416c8e329489b72ef6f3abf7770f3076`（学習方針と現在地を更新 / update learning guidance and project status）。Push後にGitHub側main・origin/main・ローカルmainの一致を確認し、一時worktreeは片付け済み
 * Day26の同期：作業フォルダは`C:\Users\draqu\Desktop\vivienne-qa-lab\game-set-automation-lab`、ブランチは`ci/editmode-tests`。本人の追加承認で、追跡対象の本文がmain保存版と一致し、ステージが空であることを確認して、CIブランチと比較基準をmainへ揃えた。この時点ではCIのHEAD・ローカルmain・origin/mainが上記9842c60で一致し、新しいコミット、CIブランチのPush、PR作成は行わなかった
-* Day26終了時のローカル追記：`PROJECT_STATUS.md`のGit欄を追加整理後の現在地へ更新し、制作ログリンクをDay26へ変更して未コミットで保持した。Day27ではこの既存変更を現在地文書へ統合して保存対象に含める。`.github/workflows/editmode-tests.yml`は本文を保持した未追跡案。AGENTS.mdはmain保存版と同一
+* Day26終了時のローカル追記：`PROJECT_STATUS.md`のGit欄を追加整理後の現在地へ更新し、制作ログリンクをDay26へ変更して未コミットで保持した。Day27にこの既存変更を現在地文書へ統合し、`3a78bff`へコミット済み。`.github/workflows/editmode-tests.yml`は本文を保持した未追跡案。AGENTS.mdはmain保存版と同一
 * 初期移動機能と以前の学習支援方針は[PR #2](https://github.com/daiki-vivienne/game-set-automation-lab/pull/2)で2026-10-23にmainへ通常マージ済み（220f9b6）。`feature/player-movement`はc0b5b01で残している。ゲーム・テストコードは本人が実装し、Codexによるコードへの直接編集は依頼された説明コメントのみ
 * コミット・PR文を作成者の視点で書く方針のAGENTS.mdへの追記は、将来の文書見直し候補として保留
 
 ## 未完了と今後の作業
 
-1. Milestone 2はDay27の練習ファイルから再開する。日本語で挙げた確認目的と、本人が記述したname・on/push・jobs・runs-on・steps・echoの役割を短く確認し、時間と理解に合わせて実行内容を小さく発展させる。Unityテストの接続・CI実行は未着手。本人が考えて書く部分とCodexへ委ねる部分を分け、既存案は本人の作成・理解確認済みの成果に含めない
+1. Milestone 2はDay28の`.github/workflows/ci-practice.yml`から続ける。保存対象とメッセージを共有し、本人の依頼でCommit・Pushして、まず取得・メッセージ表示・Tests一覧のログを確認する。Unityテストの接続・CI実行はその後に扱う。本人が考えて書く部分とCodexへ委ねる部分を分け、既存案は本人の作成・理解確認済みの成果に含めない
 2. 本人のWorkflow作成・確認後、差分とメッセージ全文を提示し、本人の依頼でCIブランチへCommit・Pushする。CI上で意図した対象の実行件数・結果・ログを確認し、適切な節目で本人と対象・復旧方法を合意して意図的な失敗の検出と復旧後の成功を試す。未実行の段階を成功と扱わない
 3. 壁・マップ外への入力と向きだけ変更する命令は各1例を確認済み。他方向・非0ターンなどへの拡張は必要性を見て検討する。敵の占有判定・戦闘は現在の範囲外
 4. 必要ならテスト名とコメントを目的に合わせて整理する。FloorCellsWalkableは床・壁とYと行番号の対応を確認している。IsWalkableIsFalse内の地図説明コメントはコピー元の上下対応の説明が残っている
@@ -118,7 +120,7 @@ IsInsideは範囲確認で、歩行可能かの判定ではない。IsWalkable�
 * [仕様・設計資料フォルダ](https://drive.google.com/drive/folders/1JPWF1LwqBv_yED0qeqgQlT1r14COcE1Q)：決定済みのゲーム仕様はGAME_SPEC、設計はTECH_ARCHITECTURE、テスト方針はTEST_STRATEGYの対応する最新資料を参照。2026-10-22のDay24開始時に各v0.1資料の今回に関わる箇所とTECH_ARCHITECTUREの4.2節を読み取り確認済み
 * [TECH_ARCHITECTURE_v0.1.md](https://drive.google.com/file/d/10wfhZBM1yn0YHzlrLL0v2yc-4tp5_Ab0/view?usp=drivesdk)：4.2節にGameStateでの移動処理とB案の受け渡し方針・採用理由を記録済み
 * [Vivienne QA Labの記録フォルダ](https://drive.google.com/drive/folders/18TJtEXtzkT8-hLh6TFMAtqBlVua3gk5F)
-* [制作ログ（Day26）](https://docs.google.com/document/d/18P-DRkSnIw7rdZoub2Cr3n1RTILRD-mNScavGMCr4dc/edit?pli=1&tab=t.0#heading=h.afem3krd2o11)
+* [制作ログ（Day27）](https://docs.google.com/document/d/1TYH3_qOsKFl-W725qmSy3VjmNwpAEujnbSOpsCaXnw4/edit?pli=1&tab=t.0#heading=h.y48bt4h1ac07)
 * [作業時間表](https://docs.google.com/spreadsheets/d/1He70CnsMwKe-eGSXBvuIYKwaueKuBBzZpusN-AjDOOc/edit)
 
 再開時はAGENTS.mdとこの文書を読み、Gitの状態・保存済みコード・Unityの確認状況を照合する。背景が必要なら、AGENTS.mdに従ってDriveの関連記録を読み取り確認する。制作ログ・復習資料・作業時間表の更新はChatGPT Workが担当し、この文書には作業時間を記載しない。

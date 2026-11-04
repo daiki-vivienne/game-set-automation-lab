@@ -43,6 +43,8 @@ jobs: # 実行するジョブの設定をまとめる。
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }} # Unityのライセンス情報。
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }} # Unityアカウントのメールアドレス。
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }} # Unityアカウントのパスワード。
+          # 追加の計測を無効にする。Actionの引数変換の問題を避け、CLIへ直接渡す。
+          GAME_CI_COVERAGE_ENABLED: 'false'
 
         # withは、このActionへ渡す設定。一つずつ別の作業になるわけではない。
         # ここにある項目名は、Unity Test Runnerの仕様で決まっている。
@@ -53,7 +55,6 @@ jobs: # 実行するジョブの設定をまとめる。
           cliVersion: v0.1.72 # GameCI内部の実行ツールの版を固定する。UnityやActionの版とは別。
           # Unityが入った実行環境（コンテナイメージ）。プロジェクトと同じUnity版を指定する。
           customImage: unityci/editor:ubuntu-6000.3.24f1-base-3.2.2
-          coverageEnabled: false # コードの実行範囲を測る追加機能を無効にし、既存テストの実行を確認する。
           artifactsPath: artifacts/editmode # 実行用PC内で、結果ファイルやログを作る場所。
 
       - name: テスト結果を保存する

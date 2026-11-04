@@ -1,14 +1,14 @@
 # game-set-automation-lab 現在の状況
 
-最終更新：2026-11-05（Day30・2026-11-04分、Unity CIの初回実行前）
+最終更新：2026-11-05（Day30・2026-11-04分、初回CIは実行ツールの引数エラーで停止）
 
 ## 現在地と次回の開始点
 
 進行中の対象はROADMAPのMilestone 2「最初のCI」。Day30は本人が`.github/workflows/ci-practice.yml`へ、UnityのEditModeテスト実行・Secrets参照・実行条件・結果ファイル保存・ジョブ権限を追加した。項目名・値・部分例はCodexが提示し、本人が記述と字下げ・項目名の修正を行った。本人の依頼でCodexが振り返り用の説明コメントを追加し、コメント追加前後で設定内容が同じことを確認した。独力での設計・理解の定着とは区別する。
 
-現在のWorkflowは、チェックアウト・メッセージ表示・Tests一覧・Unityテスト実行・結果保存の5手順。actionlint 1.7.12と差分チェックは通過したが、追加したUnityの認証・テスト実行・結果保存は未実行。確認済みのGitHub上の成功はDay29までの準備用3手順であり、Unityテストの成功ではない。ゲーム・テストコードは変更していない。既存の`.github/workflows/editmode-tests.yml`はCodex作成の未追跡案として保持し、保存・実行対象から外す。
+現在のWorkflowは、チェックアウト・メッセージ表示・Tests一覧・Unityテスト実行・結果保存の5手順。本人が`efae84e`へCommit・Pushし、[初回CI](https://github.com/daiki-vivienne/game-set-automation-lab/actions/runs/41867838001)を実行した。準備用3手順は成功したが、GameCI CLIが`Unknown argument: noCoverageEnabled`を出して終了コード1となり、Unityテストは未実行。結果保存ステップはsuccessだが、対象ファイルなしの警告が出ており、Artifacts一覧も空。ゲーム・テストコードは変更していない。既存の`.github/workflows/editmode-tests.yml`は未追跡案として保存・実行対象から外す。
 
-次は差分と実行内容を共有し、本人の依頼で作業ブランチへCommit・Pushして初回実行を確認する。本人が確認方法として挙げた実行ログに加え、テスト結果XMLの対象・件数・結果を確認する。起動・認証失敗、未実行、意図しない0件をテスト合格と扱わない。失敗時は事実・仮説・次の確認を本人と整理してから修正する。関連する説明と課題をまとめ、記述後にレビューする進め方を続ける。
+初回CIではActionが`coverageEnabled: false`を`--no-coverageEnabled`へ変換し、CLIが拒否した。CodexがAction・CLIのソースを照合し、環境変数から同じ値を渡す案を提示した。本人がwithの該当行を削除し、envへ`GAME_CI_COVERAGE_ENABLED: 'false'`を追加済み。引数解析ライブラリ単体でfalseとして読めることと、修正後のactionlint終了コード0・差分チェック通過をCodexが確認した。修正は未コミット・未Pushで、CIでは未検証。次は保存内容を共有してCommit・Pushを相談し、引数エラーが解消するか確認する。認証・起動とテスト自体の成否を分け、実行成立後にXMLの対象・件数・結果とログを照合する。
 
 ## プロジェクトと環境
 
@@ -37,6 +37,7 @@ Unity・C#・自動テスト・CI/CDを学び、ゲームSET/SDETを目指す学
 
 ## 最新の確認結果
 
+* Day30初回CI：run ID `41867838001`、対象`efae84ee1c0bf9dacd08e67c1c82c356361be195`、ジョブ`editmode`はfailure。GameCI CLI v0.1.72へ`--no-coverageEnabled`を渡した直後に`[WARN] Unknown argument: noCoverageEnabled`が出て終了コード1。Unity認証・テスト起動の成功は未確認で、テストの成功数・失敗数・スキップ数は集計されていない。保存ステップはsuccessでも、`No files were found ... No artifacts will be uploaded.`と出ており、Artifactsは0件。環境側の停止とテスト自体の失敗を区別する
 * Day30（確認日2026-11-05）は本人が追加したUnity実行・結果保存・権限の設定を、Codexがactionlint 1.7.12で確認して終了コード0。差分チェックも通過。依頼された説明コメントの追加では、非コメント部分が追加前と一致することも確認した。構文検証は認証・Unity起動・テストの実行成功を示さない
 * Day29（2026-10-31）は本人がDay28の実行ログを確認したと報告。CodexもGitHub APIで同じ実行のジョブと3手順のsuccessを読み取り再確認した。本人による表示名変更後の`ci-practice.yml`はactionlint 1.7.12と差分チェックを通過した。その後、本人の依頼でCommit・Pushし、[変更後のCI Practice](https://github.com/daiki-vivienne/game-set-automation-lab/actions/runs/41201831134)もsuccess。Codexが新しいステップ名と3手順の成功を確認し、ログで`f0d26cd`の取得、`CI practice`、Tests内の4項目の出力を確認した。Unityテストは未実行。過去のログには当時の表示名が残る
 * 最新のUnity確認はDay25（2026-10-26分、確認日2026-10-27）のローカル実行。本人がUnity Test RunnerのEditModeで実行し、成功14件・失敗0件・スキップ0件を提示画像と保存済みTestResults.xmlでCodexが確認した。XMLはtotal=14、result=Passed、passed=14、failed=0、skipped=0、inconclusive=0。Console画像には通常ログ3件が表示され、赤いエラーは見当たらなかった
@@ -84,7 +85,7 @@ IsInsideは範囲確認で、歩行可能かの判定ではない。IsWalkable�
 
 ## CIの事前準備とWorkflow案
 
-* 現在の実行対象は`.github/workflows/ci-practice.yml`、表示名は`CI Practice`。Pushを契機にUbuntu 24.04で、取得・echo・Tests一覧に続き、GameCIのEditMode実行と`upload-artifact`による結果保存を行う設定をDay30に追加した。追加後の5手順は構文検証のみ通過し、GitHub上では未実行
+* 現在の実行対象は`.github/workflows/ci-practice.yml`、表示名は`CI Practice`。Pushを契機にUbuntu 24.04で、取得・echo・Tests一覧に続き、GameCIのEditMode実行と結果保存を試す設定。構文検証は通過したが、初回CIはCLIの引数エラーで停止し、Unityテストと結果ファイル保存は成立していない
 * Unity Test Runnerは`32e57712352b500e17974b245a6dce9e11a73213`（v4.4.0）、内部のCLIは`v0.1.72`、実行イメージは`unityci/editor:ubuntu-6000.3.24f1-base-3.2.2`へ固定。Unity版はプロジェクトから読み、対象はEditModeのみ。コードカバレッジは無効。Day30に公式の設定仕様とCLIの公開、同Unity版のイメージの公開を確認したが、実際の起動は未確認
 * 結果の作成先と保存元はともに`artifacts/editmode`。保存名は`editmode-test-results`で、`if: always()`によりテスト失敗時も生成済みファイルの保存を試す。Actionsの実行ログと、別に生成されるXMLなどのファイルを区別する。ファイル未生成時はジョブログから調査する
 * ジョブの権限は`contents: read`と`checks: write`。Unity用の3つのSecretsは参照だけを記述し、値は読んだり表示したりしていない。GitHub上のテスト結果の登録に使う権限と、Unity認証は別の役割として扱う
@@ -97,12 +98,13 @@ IsInsideは範囲確認で、歩行可能かの判定ではない。IsWalkable�
 
 ## Gitと保存状態
 
-確認日：2026-11-05（JST）。過去の保存結果とDay30の初回実行前の状態を区別して記録する。
+確認日：2026-11-05（JST）。過去の保存結果とDay30の初回実行結果を区別して記録する。
 
 * Day27の保存結果：`ci/editmode-tests`で練習ファイル`.github/editmode-tests-learning.yml`とPROJECT_STATUS.mdを`3a78bff`（Workflowの基本設定を練習 / practice basic workflow configuration）へローカルコミット済み。開始時からの現在地文書の追記を保持し、Day27の到達点を統合して保存した。Day27終了時点ではPush・PR作成・mainへのマージは行わなかった
 * Day28の保存結果：本人の依頼で、練習ファイルの移動・追加した2手順・表示名変更と、PROJECT_STATUS.mdの既存変更・Day28の実行準備を`59299f0`（CIの取得・一覧表示を練習 / practice checkout and file listing in CI）へコミットし、`origin/ci/editmode-tests`へPush済み。Day27の`3a78bff`もこのPushで送信した。HEADとoriginの作業ブランチは`59299f0`で一致。PR作成・mainへのマージは未実施
 * Day29の保存結果：既存のPROJECT_STATUS.mdの実行成功・保存状態の追記とDay28制作ログリンク更新を保持したうえで、本人の表示名変更とDay29の現在地更新を`f0d26cd`（チェックアウトの表示名と現在地を更新 / update checkout label and project status）へコミットし、本人の追加依頼で作業ブランチへPush済み。HEADとローカルのorigin作業ブランチは`f0d26cd`で一致。PR作成・mainへのマージは未実施
 * Day30の初回実行前確認：HEADは`f0d26cd`で、開始時にGitHub側の作業ブランチとの一致を確認した。ステージは空。Workflowへの5手順化・説明コメントと、本書のDay29実行後の追記・制作ログリンク更新・Day30の現在地更新が未コミット。既存のローカル追記は保持して統合した。未追跡は既存のCodex作成案`.github/workflows/editmode-tests.yml`のみで、保存対象から外す
+* Day30の保存結果：本人がWorkflowと本書を`efae84e`（EditModeテストのCI設定を追加 / configure EditMode tests in CI）へCommit・Pushした。HEADとローカルのorigin作業ブランチは同コミットで一致。ステージは空。その後のWorkflowのcoverage設定の渡し方の修正と、本書への初回CI停止・修正・保存状態の追記が未コミット。未追跡の既存案はコミットに含めていない。PR作成・mainへのマージは未実施
 
 * 文書保存：本人承認により、確認済みの`AGENTS.md`とDay26終了時点の現在地文書だけを一時worktreeからmainへ直接コミット・Push済み。コミットは`9842c601416c8e329489b72ef6f3abf7770f3076`（学習方針と現在地を更新 / update learning guidance and project status）。Push後にGitHub側main・origin/main・ローカルmainの一致を確認し、一時worktreeは片付け済み
 * Day26の同期：作業フォルダは`C:\Users\draqu\Desktop\vivienne-qa-lab\game-set-automation-lab`、ブランチは`ci/editmode-tests`。本人の追加承認で、追跡対象の本文がmain保存版と一致し、ステージが空であることを確認して、CIブランチと比較基準をmainへ揃えた。この時点ではCIのHEAD・ローカルmain・origin/mainが上記9842c60で一致し、新しいコミット、CIブランチのPush、PR作成は行わなかった
@@ -112,7 +114,7 @@ IsInsideは範囲確認で、歩行可能かの判定ではない。IsWalkable�
 
 ## 未完了と今後の作業
 
-1. Milestone 2はDay30に記述した`.github/workflows/ci-practice.yml`の初回実行から続ける。差分・メッセージと実行内容を共有し、本人の依頼でCommit・Pushする。認証・起動の成否と、意図したEditModeテストの対象・件数・結果・ログを確認する。追加設定は未実行で、ゲーム・テストコードは変更していない
+1. Milestone 2はcoverage設定の渡し方を修正したWorkflowのCommit・PushとCI再実行から続ける。修正は構文検証のみ通過し、CIでは未検証。`Unknown argument: noCoverageEnabled`の解消をまず確認し、その後の認証・起動の成否とテストの対象・件数・結果・ログを区別して確認する
 2. 初回実行の成立後、適切な節目で本人と対象・復旧方法を合意して、意図的なテスト失敗の検出と復旧後の成功を試す。本人が書く部分とCodexへ委ねる部分を分け、既存のCodex作成案やヒントで示した設定を独力の成果と扱わない
 3. 壁・マップ外への入力と向きだけ変更する命令は各1例を確認済み。他方向・非0ターンなどへの拡張は必要性を見て検討する。敵の占有判定・戦闘は現在の範囲外
 4. 必要ならテスト名とコメントを目的に合わせて整理する。FloorCellsWalkableは床・壁とYと行番号の対応を確認している。IsWalkableIsFalse内の地図説明コメントはコピー元の上下対応の説明が残っている

@@ -1,15 +1,70 @@
-name: CI Practice
+# このファイルは、GitHub Actionsへ自動実行を依頼する設定。
+# GitHubが設定全体を読んで準備し、steps内の作業を上から順に実行する。
+# 「#」から後ろは説明コメント。設定の意味を振り返るために残している。
+name: CI Practice # Actions画面で使うWorkflow全体の表示名。
 
-on:
-  push:
+on: # Workflowを起動するきっかけ。
+  push: # GitHubへPushされたときに起動する。ローカルのCommitだけでは起動しない。
 
-jobs:
-  editmode:
-    runs-on: ubuntu-24.04
+jobs: # 実行するジョブの設定をまとめる。
+  editmode: # ジョブを区別する名前。この名前だけでEditModeテストが始まるわけではない。
+    runs-on: ubuntu-24.04 # GitHub側の実行用PC。手元のWindowsを変更する設定ではない。
+
+    # ジョブ全体で使うGitHubの操作権限。途中で実行する作業ではない。
+    # permissionsを明示すると、省略した権限は原則noneになるため、読む許可も記載する。
+    permissions:
+      contents: read # checkoutがGitHubのリポジトリへアクセスするための許可。PC内のファイル権限とは別。
+      checks: write # GameCIがGitHubへテスト結果のチェック情報を登録するための許可。
+
+    # 「-」で始まる各まとまりが一つのステップ（作業）。
+    # nameは表示名。usesは既成のActionを呼び、runはコマンドを実行する。
     steps:
       - name: リポジトリをチェックアウト
+        # プロジェクトのファイルを実行用PCへ取得する、GitHub公式のAction。
+        # 取得対象を省略しているので、今回のPushに対応するリポジトリ・コミットを使う。
+        # @v7は使用するcheckout Actionの版。Unityの版とは別。
         uses: actions/checkout@v7
+
       - name: メッセージを表示
-        run: echo "CI practice"
+        run: echo "CI practice" # 文字を実行ログへ出す。Unityテストを実行する命令ではない。
+
       - name: 取得したフォルダの中身を確認する
-        run: ls Assets/_Project/Tests
+        run: ls Assets/_Project/Tests # 取得済みフォルダの一覧を確認する。テスト件数の表示ではない。
+
+      - name: Unityテストを実行
+        # GameCIのUnity Test Runnerを呼ぶ。Unityの認証・起動・テスト実行をまとめて扱う部品。
+        # @以降は使うActionの版を固定するコミットID（v4.4.0）。暗記する値ではない。
+        uses: game-ci/unity-test-runner@32e57712352b500e17974b245a6dce9e11a73213
+
+        # envは、この処理へ渡す名前付きの値（環境変数）のまとまり。
+        # 左側はGameCIへ渡す名前、右側はGitHub Secretsに保管した値の参照先。
+        # 認証情報そのものをこのファイルへ書いたり、ログへ出したりしない。
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }} # Unityのライセンス情報。
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }} # Unityアカウントのメールアドレス。
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }} # Unityアカウントのパスワード。
+
+        # withは、このActionへ渡す設定。一つずつ別の作業になるわけではない。
+        # ここにある項目名は、Unity Test Runnerの仕様で決まっている。
+        with:
+          projectPath: . # 「.」は取得したリポジトリの直下。Unityプロジェクトがある場所。
+          unityVersion: auto # ProjectSettings/ProjectVersion.txtからUnity版を読む（現在6000.3.24f1）。
+          testMode: editmode # 実行対象をEditModeへ限定する。PlayModeやPlayer Buildは含めない。
+          cliVersion: v0.1.72 # GameCI内部の実行ツールの版を固定する。UnityやActionの版とは別。
+          # Unityが入った実行環境（コンテナイメージ）。プロジェクトと同じUnity版を指定する。
+          customImage: unityci/editor:ubuntu-6000.3.24f1-base-3.2.2
+          coverageEnabled: false # コードの実行範囲を測る追加機能を無効にし、既存テストの実行を確認する。
+          artifactsPath: artifacts/editmode # 実行用PC内で、結果ファイルやログを作る場所。
+
+      - name: テスト結果を保存する
+        # 実行用PCで作られたファイルを、GitHubのArtifacts欄から取り出せるように保存するAction。
+        # Actionsの実行ログは画面で読める。ここでは別に生成されたXMLなどのファイルも残す。
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always() # テストが失敗しても保存を試す。失敗を成功扱いに変える指定ではない。
+        # 認証・起動の段階で止まり結果ファイルが作られなかった場合は、Actionsの実行ログを調べる。
+        with:
+          name: 'editmode-test-results' # 保存物に付ける名前。外側のステップ表示名とは役割が違う。
+          path: artifacts/editmode # 保存元。上のartifactsPathでファイルを作る場所と合わせる。
+
+# 実行後は、対象テストの件数・結果・ログを確認する。
+# 構文チェック通過やWorkflowの成功表示だけで、Unityテストが合格したとは判断しない。

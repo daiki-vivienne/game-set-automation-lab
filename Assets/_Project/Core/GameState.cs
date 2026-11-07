@@ -89,7 +89,6 @@ public class GameState
     public void ChangeFacing(Direction direction)
     {
         facing = direction;
-        turnCount = turnCount + 1;
     }
         
 }    

@@ -1,6 +1,6 @@
 # game-set-automation-lab 現在の状況
 
-最終更新：2026-11-09（Day33、本人がPR #3を作成。Push・PRの両CIで14件成功、mainは未マージ）
+最終更新：2026-11-10（Day33分の終了整理。PR #3を通常マージ・main同期済み、マージ後CIも14件成功）
 
 ## 現在地と次回の開始点
 
@@ -8,7 +8,7 @@
 
 現在のWorkflowは、チェックアウト・メッセージ表示・Tests一覧・Unityテスト実行・結果保存の5手順。正常時の基準はDay30の[CI](https://github.com/daiki-vivienne/game-set-automation-lab/actions/runs/41873099355)の既存EditModeテスト14件成功・失敗0件・スキップ0件。Day32は本人がGameState.ChangeFacingへターン加算1行を一時追加し、既存テストによる誤り検出を試した。Codexが検証用コミット`95f4911`と、その1行をrevertした復旧コミット`8d9ad5c`を作成・Push済み。ゲーム処理は作業前と同じ内容に復旧しており、この検証でテスト期待値・Workflowは変更していない。Day33は別の変更としてPR起動設定を記述した。その後、本人の依頼で旧Codex案を削除し、本人作成の採用版を`ci-practice.yml`から`.github/workflows/editmode-tests.yml`へ改名、表示名を`EditMode Tests`にした。現在の同名ファイルは旧案ではなく採用版で、`973fb1f`へCommit・Push済み。
 
-初回CIではActionが`coverageEnabled: false`を`--no-coverageEnabled`へ変換し、CLIが拒否したため、`GAME_CI_COVERAGE_ENABLED: 'false'`をenvから渡す設定へ修正した。Day33は本人もDay32の2実行のログ内XMLを開き、一時変更側の13件成功・1件失敗（期待値0・実際値1）と復旧側の14件成功を照合し、向きだけ変更する処理のターン加算を既存テストが検出したと説明した。revertのCLI／Rider操作とreset・Undo Commitの違いは説明済みだが、本人による復旧操作は未実施。ROADMAPの実行契機はPush「または」Pull Requestで、PushによるMilestone 2の完成条件に対応する証拠は揃った。区切りと次Milestoneへの移行判断はWorkへ共有する。PR起動設定と改名は`973fb1f`へCommit・Push済み。新名のPush CI（run ID `42634161109`）で14件成功を確認した。その後、本人がGitHubからPR #3（ci/editmode-tests → main）を作成し、PRイベントのCI（run ID `42636502326`）でも14件成功を確認した。PRはopen・未マージ。PR本文には本人の依頼によりCodexが確認結果を日英で反映済み。PRの最終レビューとマージ、ローカルmainの同期が次の作業。
+初回CIではActionが`coverageEnabled: false`を`--no-coverageEnabled`へ変換し、CLIが拒否したため、`GAME_CI_COVERAGE_ENABLED: 'false'`をenvから渡す設定へ修正した。Day33は本人もDay32の2実行のログ内XMLを開き、一時変更側の13件成功・1件失敗（期待値0・実際値1）と復旧側の14件成功を照合し、向きだけ変更する処理のターン加算を既存テストが検出したと説明した。revertのCLI／Rider操作とreset・Undo Commitの違いは説明済みだが、本人による復旧操作は未実施。ROADMAPの実行契機はPush「または」Pull Requestで、PushによるMilestone 2の完成条件に対応する証拠は揃った。区切りと次Milestoneへの移行判断はWorkへ共有する。PR起動設定と改名は`973fb1f`へCommit・Push済み。新名のPush CI（run ID `42634161109`）で14件成功を確認した。その後、本人がGitHubからPR #3（ci/editmode-tests → main）を作成し、PRイベントのCI（run ID `42636502326`）でも14件成功を確認した。PR本文は本人の依頼でCodexが日英の確認結果を更新した。最終レビューは修正指摘なし。文書追記の`e3ea237`でもPush・PRの両CIが14件成功し、その後、本人がPR #3を通常マージした。統合コミット`bdfa925`へローカルmainを同期済み。マージ後のmain CI（run ID `42641348061`）も14件成功を確認済み。次はMilestone 2の区切りと、Milestone 3で最初に扱う範囲をWorkへ共有・相談する。
 
 ## プロジェクトと環境
 
@@ -36,6 +36,10 @@ Unity・C#・自動テスト・CI/CDを学び、ゲームSET/SDETを目指す学
 固定マップと左右移動のテスト用地図は3行・横幅5。上下移動と壁・マップ外への入力には4行・横幅5の地図を使用し、各行は同じ長さ。本番マップの大きさ・配置を決めたものではない。上下移動の地図には縦に隣り合う床がある。マップ外のテストでは(4, 1)を床にした専用配置から(5, 1)への入力を試す。本番地図の外周を決めるものではなく、Coreの地図外への移動禁止ルールを確認するための配置である。高さと幅を異なる値にし、幅の処理が誤って行数を返しても区別できるようにしている。FloorCellsWalkableでは上段中央を壁、下段中央を床とし、上下の行を取り違えてもテストで区別できる配置にしている。
 
 ## 最新の確認結果
+
+* Day33分のマージ後確認（2026-11-10）：本人がPR #3を通常マージし、統合コミットは`bdfa925043d82f74da560c161c11f8472e512962`。親コミットは元mainの`9842c60`と作業先端の`e3ea237`で、日々のコミット履歴を保持している。Codexがローカルmain・origin/mainと統合点の一致、統合点と作業先端の保存済みツリー一致を確認した。[mainのCI](https://github.com/daiki-vivienne/game-set-automation-lab/actions/runs/42641348061)はevent=push、head_branch=mainで起動し、ジョブeditmodeと5手順が成功した。ログ内XMLの対象`Vivienne.EditModeTests.dll`、test-case 14件、総数14・成功14・失敗0・スキップ0・inconclusive 0を確認し、`ChangeFacingKeepsPositionAndTurnCount`もPassed。成果物`editmode-test-results`（ID `13685752494`）の保存も確認した。これはマージ前の結果とは別の、統合後main上での実行結果。
+
+* マージ直前の最終確認：文書追記を`e3ea237fa7ee45de07c3cb8cc7d219e170e0c24d`へCommit・Pushした。[Push CI](https://github.com/daiki-vivienne/game-set-automation-lab/actions/runs/42639882676)と[PR CI](https://github.com/daiki-vivienne/game-set-automation-lab/actions/runs/42639892331)の両方で、ログ内XMLの対象`Vivienne.EditModeTests.dll`、総数14・成功14・失敗0・スキップ0・inconclusive 0を確認した。Artifacts保存も成功。actionlint 1.7.12とgit diff --checkを通過し、GitHub上のレビュー・未解決スレッドはなく、Codexの最終レビューも修正指摘なし。Core・Testsの最終差分はmain基準でなし。ローカルUnityは再実行していない
 
 * Day33のPR CI：本人がGitHubから[PR #3](https://github.com/daiki-vivienne/game-set-automation-lab/pull/3)を作成した。baseはmain、headはci/editmode-tests、対象先端は`973fb1f`。[CI](https://github.com/daiki-vivienne/game-set-automation-lab/actions/runs/42636502326)のevent=pull_requestを実行メタデータで確認し、同一リポジトリPRのジョブがスキップされず5手順とも成功した。ログ内XMLで対象`Vivienne.EditModeTests.dll`、総数14・成功14・失敗0・スキップ0・inconclusive 0を確認した。成果物`editmode-test-results`（ID `13683437074`）も保存済み。checkout対象はPR用の仮マージコミット`e5884a5d882437d89e147717c4c390b4e68563c3`（refs/pull/3/merge）で、mainへの実際のマージは未実施。PR本文は本人の依頼でCodexが日英ともPR実行を確認済みへ移し、実行結果のリンクを追記した。外部fork PRのスキップは実イベントでは未検証
 
@@ -103,7 +107,7 @@ IsInsideは範囲確認で、歩行可能かの判定ではない。IsWalkable�
 
 ## Gitと保存状態
 
-確認日：2026-11-09（JST）。Day32の実行結果と、Day33の結果読解・設定変更・Push／PR実行を区別して記録する。
+確認日：2026-11-10（JST、Day33分の終了整理）。Day32の実行結果と、Day33の結果読解・設定変更・Push／PR実行・マージ後確認を区別して記録する。
 
 * Day27の保存結果：`ci/editmode-tests`で練習ファイル`.github/editmode-tests-learning.yml`とPROJECT_STATUS.mdを`3a78bff`（Workflowの基本設定を練習 / practice basic workflow configuration）へローカルコミット済み。開始時からの現在地文書の追記を保持し、Day27の到達点を統合して保存した。Day27終了時点ではPush・PR作成・mainへのマージは行わなかった
 * Day28の保存結果：本人の依頼で、練習ファイルの移動・追加した2手順・表示名変更と、PROJECT_STATUS.mdの既存変更・Day28の実行準備を`59299f0`（CIの取得・一覧表示を練習 / practice checkout and file listing in CI）へコミットし、`origin/ci/editmode-tests`へPush済み。Day27の`3a78bff`もこのPushで送信した。HEADとoriginの作業ブランチは`59299f0`で一致。PR作成・mainへのマージは未実施
@@ -112,7 +116,7 @@ IsInsideは範囲確認で、歩行可能かの判定ではない。IsWalkable�
 * Day30の保存結果：本人がWorkflowと本書を`efae84e`（EditModeテストのCI設定を追加 / configure EditMode tests in CI）へCommit・Pushし、その後のcoverage設定の渡し方の修正と本書の追記を`ffaa59d`（計測設定の渡し方を修正 / fix coverage option forwarding）へCommit・Pushした。HEADとローカルのorigin作業ブランチは`ffaa59d`で一致。ステージは空。保存後のCI再実行・保存状態を本書へ追記し、未コミットで保持している。未追跡の既存案はコミットに含めていない。PR作成・mainへのマージは未実施
 * Day31の保存状態：ブランチ`ci/editmode-tests`、HEADとローカルのorigin作業ブランチは`ffaa59d`。開始時からの本書のDay30成功結果の追記を保持し、結果読解の完了と次の開始点を更新した。本書だけが変更済みで未コミット、ステージは空。既存案`.github/workflows/editmode-tests.yml`は未追跡のまま本文を保持。新しいCommit・Push・PR・マージは行っていない
 * Day32の保存状態：本人の依頼でCodexがGameState.csだけを`95f4911e20081b5031d7f8e2c0694b625ab45d87`（検証用に向き変更のターン処理へ誤りを導入 / inject a turn-count fault for CI verification）へコミット・Pushし、同コミットを`git revert --no-commit`で打ち消して`8d9ad5cb082648c61d631d394b4fdb59b7926867`（検証用のターン加算を取り消して復旧 / restore facing-only behavior）へコミット・Pushした。ブランチは`ci/editmode-tests`、HEADとローカルのorigin先端は復旧コミットで一致。ステージは空。本書はDay30・Day31の既存追記を保持してDay32の現在地を更新し、未コミット。既存の未追跡案は両コミットに含めず保持。PR作成・mainへのマージは行っていない
-* Day33の保存状態：本人のPush依頼により、Workflowの改名・PR設定・コメント整理と、本書の既存追記を含む更新を`973fb1fff6573ba96dfcc72d959d4cf113cde2ef`（EditMode用Workflowへ改名しPR起動を追加 / rename the EditMode workflow and enable PR checks）へCommit・Pushした。ブランチはci/editmode-tests、HEADとorigin先端は同コミットで、ステージは空。Gitは旧名から新名への改名として記録し、旧未採用案はローカルから削除済み。保存後のPush・PR CI結果と保存状態の追記を本書へ反映した。本人がCodex提示の日英タイトル・本文を使いPR #3を作成し、Codexがイベント・対象・件数・結果を確認した。PRはopenで、mainへのマージは未実施
+* Day33の保存と統合：Workflowの改名・PR設定・コメント整理と、既存追記を含む現在地更新を`973fb1f`へCommit・Pushし、Push・PRの確認結果を記録した文書を`e3ea237`へCommit・Pushした。本人がCodex提示の日英タイトル・本文を使ってPR #3を作成し、レビュー・最新CI確認後にGitHubから通常マージした。統合点は`bdfa925`。ローカルmainをorigin/mainへfast-forwardで同期済み。作業ブランチci/editmode-testsは`e3ea237`で保持し、旧未採用案は依頼により削除済み。マージ後の本書更新の保存コミットはGit履歴で確認する
 
 * 文書保存：本人承認により、確認済みの`AGENTS.md`とDay26終了時点の現在地文書だけを一時worktreeからmainへ直接コミット・Push済み。コミットは`9842c601416c8e329489b72ef6f3abf7770f3076`（学習方針と現在地を更新 / update learning guidance and project status）。Push後にGitHub側main・origin/main・ローカルmainの一致を確認し、一時worktreeは片付け済み
 * Day26の同期：作業フォルダは`C:\Users\draqu\Desktop\vivienne-qa-lab\game-set-automation-lab`、ブランチは`ci/editmode-tests`。本人の追加承認で、追跡対象の本文がmain保存版と一致し、ステージが空であることを確認して、CIブランチと比較基準をmainへ揃えた。この時点ではCIのHEAD・ローカルmain・origin/mainが上記9842c60で一致し、新しいコミット、CIブランチのPush、PR作成は行わなかった
@@ -122,7 +126,7 @@ IsInsideは範囲確認で、歩行可能かの判定ではない。IsWalkable�
 
 ## 未完了と今後の作業
 
-1. PR #3本文へのPRイベント14件成功の反映は完了。Push CI（run ID `42634161109`）とPR CI（run ID `42636502326`）はともに14件成功を確認済み。次はPRの最終レビューとマージ、ローカルmainの同期を行う。追加のCommit・Pushがあれば、その先端に対するCIを確認してからマージする。外部fork PRのスキップは未検証として区別する。
+1. PR #3の通常マージとローカルmain同期、マージ後main CI（run ID `42641348061`）の対象・件数・結果・Artifacts確認は完了。Milestone 2の到達点とMilestone 3の最初の範囲をWorkへ共有・相談する。外部fork PRのスキップは未検証として区別する。
 2. Milestone 2はPushによる成功・意図的な誤り検出・復旧後の成功と、本人の結果照合・調査入口の確認が揃った。ROADMAPはPush「または」Pull Requestで、両方を必須へ読み替えない。追加した同一リポジトリPRの経路も14件成功を確認済み。外部forkの実行・スキップは未検証として区別し、完了の区切りとMilestone 3への移行判断をWorkへ共有する。設定の条件はAIが提示した範囲があり、独力の設計・理解の定着とは区別する
 3. 壁・マップ外への入力と向きだけ変更する命令は各1例を確認済み。他方向・非0ターンなどへの拡張は必要性を見て検討する。敵の占有判定・戦闘は現在の範囲外
 4. 必要ならテスト名とコメントを目的に合わせて整理する。FloorCellsWalkableは床・壁とYと行番号の対応を確認している。IsWalkableIsFalse内の地図説明コメントはコピー元の上下対応の説明が残っている
@@ -139,7 +143,7 @@ IsInsideは範囲確認で、歩行可能かの判定ではない。IsWalkable�
 * [TECH_ARCHITECTURE_v0.1.md](https://drive.google.com/file/d/10wfhZBM1yn0YHzlrLL0v2yc-4tp5_Ab0/view?usp=drivesdk)：4.2節にGameStateでの移動処理とB案の受け渡し方針・採用理由を記録済み
 * [Vivienne QA Labの記録フォルダ](https://drive.google.com/drive/folders/18TJtEXtzkT8-hLh6TFMAtqBlVua3gk5F)
 * [制作ログ（Day32）](https://docs.google.com/document/d/1-oN-uMUXcpd5hUMwt47563VG16-IDXDBVIuthrjFGkg/edit)：Day33に本人の予想・AIによるGit操作・終了後の結果確認を読み取り照合済み
-* [PR #3：EditModeテストのCIを導入](https://github.com/daiki-vivienne/game-set-automation-lab/pull/3)：本人がDay33に作成。Push・PRイベントの両方で14件成功、未マージ
+* [PR #3：EditModeテストのCIを導入](https://github.com/daiki-vivienne/game-set-automation-lab/pull/3)：本人がDay33に作成し、通常マージ済み。統合点`bdfa925`。マージ前のPush・PRイベントで14件成功
 * [作業時間表](https://docs.google.com/spreadsheets/d/1He70CnsMwKe-eGSXBvuIYKwaueKuBBzZpusN-AjDOOc/edit)
 
 再開時はAGENTS.mdとこの文書を読み、Gitの状態・保存済みコード・Unityの確認状況を照合する。背景が必要なら、AGENTS.mdに従ってDriveの関連記録を読み取り確認する。制作ログ・復習資料・作業時間表の更新はChatGPT Workが担当し、この文書には作業時間を記載しない。

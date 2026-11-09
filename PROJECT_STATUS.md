@@ -1,14 +1,14 @@
 # game-set-automation-lab 現在の状況
 
-最終更新：2026-11-09（Day33、本人が失敗検出と復旧を照合。PR起動設定は記述・構文検証済み、未実行）
+最終更新：2026-11-09（Day33、本人がPR #3を作成。Push・PRの両CIで14件成功、mainは未マージ）
 
 ## 現在地と次回の開始点
 
 進行中の対象はROADMAPのMilestone 2「最初のCI」。Day30は本人が`.github/workflows/ci-practice.yml`へ、UnityのEditModeテスト実行・Secrets参照・実行条件・結果ファイル保存・ジョブ権限を追加した。項目名・値・部分例はCodexが提示し、本人が記述と字下げ・項目名の修正を行った。本人の依頼でCodexが振り返り用の説明コメントを追加し、コメント追加前後で設定内容が同じことを確認した。独力での設計・理解の定着とは区別する。
 
-現在のWorkflowは、チェックアウト・メッセージ表示・Tests一覧・Unityテスト実行・結果保存の5手順。正常時の基準はDay30の[CI](https://github.com/daiki-vivienne/game-set-automation-lab/actions/runs/41873099355)の既存EditModeテスト14件成功・失敗0件・スキップ0件。Day32は本人がGameState.ChangeFacingへターン加算1行を一時追加し、既存テストによる誤り検出を試した。Codexが検証用コミット`95f4911`と、その1行をrevertした復旧コミット`8d9ad5c`を作成・Push済み。ゲーム処理は作業前と同じ内容に復旧しており、この検証でテスト期待値・Workflowは変更していない。Day33は別の変更としてPR起動設定を記述した。その後、本人の依頼で旧Codex案を削除し、本人作成の採用版を`ci-practice.yml`から`.github/workflows/editmode-tests.yml`へ改名、表示名を`EditMode Tests`にした。現在の同名ファイルは旧案ではなく採用版で、コミット対象となる。
+現在のWorkflowは、チェックアウト・メッセージ表示・Tests一覧・Unityテスト実行・結果保存の5手順。正常時の基準はDay30の[CI](https://github.com/daiki-vivienne/game-set-automation-lab/actions/runs/41873099355)の既存EditModeテスト14件成功・失敗0件・スキップ0件。Day32は本人がGameState.ChangeFacingへターン加算1行を一時追加し、既存テストによる誤り検出を試した。Codexが検証用コミット`95f4911`と、その1行をrevertした復旧コミット`8d9ad5c`を作成・Push済み。ゲーム処理は作業前と同じ内容に復旧しており、この検証でテスト期待値・Workflowは変更していない。Day33は別の変更としてPR起動設定を記述した。その後、本人の依頼で旧Codex案を削除し、本人作成の採用版を`ci-practice.yml`から`.github/workflows/editmode-tests.yml`へ改名、表示名を`EditMode Tests`にした。現在の同名ファイルは旧案ではなく採用版で、`973fb1f`へCommit・Push済み。
 
-初回CIではActionが`coverageEnabled: false`を`--no-coverageEnabled`へ変換し、CLIが拒否したため、`GAME_CI_COVERAGE_ENABLED: 'false'`をenvから渡す設定へ修正した。Day33は本人もDay32の2実行のログ内XMLを開き、一時変更側の13件成功・1件失敗（期待値0・実際値1）と復旧側の14件成功を照合し、向きだけ変更する処理のターン加算を既存テストが検出したと説明した。revertのCLI／Rider操作とreset・Undo Commitの違いは説明済みだが、本人による復旧操作は未実施。ROADMAPの実行契機はPush「または」Pull Requestで、PushによるMilestone 2の完成条件に対応する証拠は揃った。区切りと次Milestoneへの移行判断はWorkへ共有する。追加のPR起動設定は未コミット・未Pushで、PRイベントの実行確認が次の開始点。
+初回CIではActionが`coverageEnabled: false`を`--no-coverageEnabled`へ変換し、CLIが拒否したため、`GAME_CI_COVERAGE_ENABLED: 'false'`をenvから渡す設定へ修正した。Day33は本人もDay32の2実行のログ内XMLを開き、一時変更側の13件成功・1件失敗（期待値0・実際値1）と復旧側の14件成功を照合し、向きだけ変更する処理のターン加算を既存テストが検出したと説明した。revertのCLI／Rider操作とreset・Undo Commitの違いは説明済みだが、本人による復旧操作は未実施。ROADMAPの実行契機はPush「または」Pull Requestで、PushによるMilestone 2の完成条件に対応する証拠は揃った。区切りと次Milestoneへの移行判断はWorkへ共有する。PR起動設定と改名は`973fb1f`へCommit・Push済み。新名のPush CI（run ID `42634161109`）で14件成功を確認した。その後、本人がGitHubからPR #3（ci/editmode-tests → main）を作成し、PRイベントのCI（run ID `42636502326`）でも14件成功を確認した。PRはopen・未マージ。PR本文には本人の依頼によりCodexが確認結果を日英で反映済み。PRの最終レビューとマージ、ローカルmainの同期が次の作業。
 
 ## プロジェクトと環境
 
@@ -37,7 +37,11 @@ Unity・C#・自動テスト・CI/CDを学び、ゲームSET/SDETを目指す学
 
 ## 最新の確認結果
 
-* Day33（2026-11-09）：本人がDay32の両実行の対象test-caseとtest-runを提示し、検証側のExpected: 0 / But was: 1、復旧側のPassed、集計13成功・1失敗から14成功への変化を確認した。本人が代表1件の検証目的を説明した。PR起動と同一リポジトリのPRだけジョブを実行する条件は、Codexが目的・項目名・式の部品を提示し、本人がRiderで記述・修正した。修正後のactionlint 1.7.12と差分チェックは終了コード0。条件式はPush・同一リポジトリPR・外部fork PRの3ケースをCodexが読み解いて確認した段階で、実際のPR起動・forkのスキップは未検証。新たなUnity・CI実行はしておらず、ゲーム・テストコードの変更もない
+* Day33のPR CI：本人がGitHubから[PR #3](https://github.com/daiki-vivienne/game-set-automation-lab/pull/3)を作成した。baseはmain、headはci/editmode-tests、対象先端は`973fb1f`。[CI](https://github.com/daiki-vivienne/game-set-automation-lab/actions/runs/42636502326)のevent=pull_requestを実行メタデータで確認し、同一リポジトリPRのジョブがスキップされず5手順とも成功した。ログ内XMLで対象`Vivienne.EditModeTests.dll`、総数14・成功14・失敗0・スキップ0・inconclusive 0を確認した。成果物`editmode-test-results`（ID `13683437074`）も保存済み。checkout対象はPR用の仮マージコミット`e5884a5d882437d89e147717c4c390b4e68563c3`（refs/pull/3/merge）で、mainへの実際のマージは未実施。PR本文は本人の依頼でCodexが日英ともPR実行を確認済みへ移し、実行結果のリンクを追記した。外部fork PRのスキップは実イベントでは未検証
+
+* Day33の保存後CI：`973fb1f`のPushにより、新名`EditMode Tests`／`.github/workflows/editmode-tests.yml`のCI（run ID `42634161109`）が起動し、ジョブeditmodeと5手順はsuccess。ログ内XMLで対象`Vivienne.EditModeTests.dll`、総数14・成功14・失敗0・スキップ0・inconclusive 0を確認し、`ChangeFacingKeepsPositionAndTurnCount`もPassed。成果物`editmode-test-results`（ID `13681279112`）の保存も確認した。これは追加条件がPush実行を維持したことの確認。PRイベントの成功は上記の別実行で確認し、外部fork PRのスキップは未検証
+
+* Day33前半（2026-11-09）：本人がDay32の両実行の対象test-caseとtest-runを提示し、検証側のExpected: 0 / But was: 1、復旧側のPassed、集計13成功・1失敗から14成功への変化を確認した。本人が代表1件の検証目的を説明した。PR起動と同一リポジトリのPRだけジョブを実行する条件は、Codexが目的・項目名・式の部品を提示し、本人がRiderで記述・修正した。修正後のactionlint 1.7.12と差分チェックは終了コード0。条件式はPush・同一リポジトリPR・外部fork PRの3ケースをCodexが読み解いて確認した段階で、実際のPR起動・forkのスキップは未検証。この記述・構文検証段階では新たなUnity・CI実行はしておらず、ゲーム・テストコードの変更もない
 * Day32（2026-11-07）のCI結果をDay33（2026-11-09）に読み取り再確認した。本人がChangeFacingへ`turnCount = turnCount + 1;`を一時追加し、対象テストが期待値0・実際値1で失敗すると予想した。検証用`95f4911`の[CI](https://github.com/daiki-vivienne/game-set-automation-lab/actions/runs/42377597976)は総数14・成功13・失敗1・スキップ0。実行ログ内XMLで`GameStateTests.ChangeFacingKeepsPositionAndTurnCount`のFailedとExpected: 0 / But was: 1を確認した。復旧`8d9ad5c`の[CI](https://github.com/daiki-vivienne/game-set-automation-lab/actions/runs/42377660368)は総数14・成功14・失敗0・スキップ0で、同テストもPassed。両実行に成果物`editmode-test-results`が存在する。本人もDay33に結果を照合済み。復旧時点のCore・Tests・実行Workflowは基準`ffaa59d`と同じで、Day33のPR設定追加後もCore・Testsは同基準と差分なし
 * Day31（2026-11-06）は既存のCI結果の読解のみで、Unity・CIは再実行していない。本人がDay30成功実行（run ID `41873099355`）のActionsログ・Artifacts・結果XMLを開き、案内した項目から対象`Vivienne.EditModeTests.dll`とtotal=14、passed=14、failed=0、skipped=0を読み取った。後半はDay30初回失敗（run ID `41867838001`）のステップ・終了コード・原因行をGUIで確認し、成功側の実行コマンドに`--no-coverageEnabled`がないことを比較した。[原因行へのリンク](https://github.com/daiki-vivienne/game-set-automation-lab/actions/runs/41867838001/job/126706615939#step:5:30)も取得した。起動前の引数エラーとテスト自体の失敗の区別はCodexが説明した。個別ケースの詳細・新たな意図的失敗と復旧は今回の対象外。ゲーム・テスト・Workflowの変更なし
 * Day30修正後CI（確認日2026-11-05）：run ID `41873099355`、対象`ffaa59d78da015277ff64782ec8abc03f0f26158`。ジョブ`editmode`と5手順はsuccess。GameCI CLI v0.1.72の`test --docker --engine=unity . --testPlatforms=editmode`でUnity 6000.3.24f1を起動し、ログと保存済み`editmode-results.xml`の両方でtotal=14、passed=14、failed=0、skipped=0、inconclusive=0、result=Passedを確認した。対象は`Vivienne.EditModeTests.dll`のFixedMapTest 6件とGameStateTests 8件で、XMLのtest-caseも14件。Artifacts `editmode-test-results`（ID `13344928507`）には同XMLと`editmode.log`があり、取得して内容を確認した。ログ上、ULFの返却処理で警告はあるが、代替処理によるentitlementライセンスの返却成功を確認した。初回CI成功であり、意図的なテスト失敗の検出・復旧はまだ試していない
@@ -89,7 +93,7 @@ IsInsideは範囲確認で、歩行可能かの判定ではない。IsWalkable�
 
 ## CIの設定と確認状態
 
-* ローカルの採用版は`.github/workflows/editmode-tests.yml`、表示名は`EditMode Tests`。GitHub保存済みの版は旧名`ci-practice.yml`・表示名`CI Practice`のPush起動設定で、Day30に実行と保存の初回成功を確認済み。本人がDay33にmain向け`pull_request`と、ジョブのif「PR以外、またはPR元がこのリポジトリと同じ場合に実行」を記述した。Push実行を維持し、外部fork PRではUnityのジョブをスキップする意図。追加設定と改名後の構文検証は通過したが、未コミット・未Push・PR実行未確認。checkout・ジョブifの説明コメントの追記と、依頼された改名・表示名変更はCodexが行った
+* 採用版は`.github/workflows/editmode-tests.yml`、表示名は`EditMode Tests`。Day33に本人がmain向けpull_requestと、ジョブif「PR以外、またはPR元がこのリポジトリと同じ場合に実行」を記述した。Push実行を維持し、外部fork PRではUnityのジョブをスキップする意図。本人の依頼で改名・表示名変更・説明コメントをCodexが整え、本人が一部コメントを削除した最終内容を`973fb1f`へCommit・Push済み。actionlintと差分チェックを通過し、新名でのPush CIも14件成功。PR #3のpull_requestイベントでも14件成功を確認済み。外部fork PRのスキップは実イベントでは未検証
 * Unity Test Runnerは`32e57712352b500e17974b245a6dce9e11a73213`（v4.4.0）、内部のCLIは`v0.1.72`、実行イメージは`unityci/editor:ubuntu-6000.3.24f1-base-3.2.2`へ固定。Unity版はプロジェクトから読み、対象はEditModeのみ。コードカバレッジは`GAME_CI_COVERAGE_ENABLED: 'false'`で無効化する。withの`coverageEnabled: false`はCLIが拒否する引数へ変換されるため使わない。Day30の修正後CIで認証・Unity起動・テスト実行を確認済み
 * 結果の作成先と保存元はともに`artifacts/editmode`。保存名は`editmode-test-results`で、`if: always()`によりテスト失敗時も生成済みファイルの保存を試す。Actionsの実行ログと、別に生成されるXMLなどのファイルを区別する。ファイル未生成時はジョブログから調査する
 * ジョブの権限は`contents: read`と`checks: write`。Unity用の3つのSecretsは参照だけを記述し、値は読んだり表示したりしていない。GitHub上のテスト結果の登録に使う権限と、Unity認証は別の役割として扱う
@@ -99,7 +103,7 @@ IsInsideは範囲確認で、歩行可能かの判定ではない。IsWalkable�
 
 ## Gitと保存状態
 
-確認日：2026-11-09（JST）。Day32の実行結果とDay33の読解・未実行の設定変更を区別して記録する。
+確認日：2026-11-09（JST）。Day32の実行結果と、Day33の結果読解・設定変更・Push／PR実行を区別して記録する。
 
 * Day27の保存結果：`ci/editmode-tests`で練習ファイル`.github/editmode-tests-learning.yml`とPROJECT_STATUS.mdを`3a78bff`（Workflowの基本設定を練習 / practice basic workflow configuration）へローカルコミット済み。開始時からの現在地文書の追記を保持し、Day27の到達点を統合して保存した。Day27終了時点ではPush・PR作成・mainへのマージは行わなかった
 * Day28の保存結果：本人の依頼で、練習ファイルの移動・追加した2手順・表示名変更と、PROJECT_STATUS.mdの既存変更・Day28の実行準備を`59299f0`（CIの取得・一覧表示を練習 / practice checkout and file listing in CI）へコミットし、`origin/ci/editmode-tests`へPush済み。Day27の`3a78bff`もこのPushで送信した。HEADとoriginの作業ブランチは`59299f0`で一致。PR作成・mainへのマージは未実施
@@ -108,7 +112,7 @@ IsInsideは範囲確認で、歩行可能かの判定ではない。IsWalkable�
 * Day30の保存結果：本人がWorkflowと本書を`efae84e`（EditModeテストのCI設定を追加 / configure EditMode tests in CI）へCommit・Pushし、その後のcoverage設定の渡し方の修正と本書の追記を`ffaa59d`（計測設定の渡し方を修正 / fix coverage option forwarding）へCommit・Pushした。HEADとローカルのorigin作業ブランチは`ffaa59d`で一致。ステージは空。保存後のCI再実行・保存状態を本書へ追記し、未コミットで保持している。未追跡の既存案はコミットに含めていない。PR作成・mainへのマージは未実施
 * Day31の保存状態：ブランチ`ci/editmode-tests`、HEADとローカルのorigin作業ブランチは`ffaa59d`。開始時からの本書のDay30成功結果の追記を保持し、結果読解の完了と次の開始点を更新した。本書だけが変更済みで未コミット、ステージは空。既存案`.github/workflows/editmode-tests.yml`は未追跡のまま本文を保持。新しいCommit・Push・PR・マージは行っていない
 * Day32の保存状態：本人の依頼でCodexがGameState.csだけを`95f4911e20081b5031d7f8e2c0694b625ab45d87`（検証用に向き変更のターン処理へ誤りを導入 / inject a turn-count fault for CI verification）へコミット・Pushし、同コミットを`git revert --no-commit`で打ち消して`8d9ad5cb082648c61d631d394b4fdb59b7926867`（検証用のターン加算を取り消して復旧 / restore facing-only behavior）へコミット・Pushした。ブランチは`ci/editmode-tests`、HEADとローカルのorigin先端は復旧コミットで一致。ステージは空。本書はDay30・Day31の既存追記を保持してDay32の現在地を更新し、未コミット。既存の未追跡案は両コミットに含めず保持。PR作成・mainへのマージは行っていない
-* Day33の保存状態：ブランチ`ci/editmode-tests`、HEADとローカルのorigin先端は`8d9ad5c`。WorkflowのPR起動・ジョブ条件・改名・表示名変更と、本書の既存追記を含む現在地更新が未コミット。ステージは空。旧未採用案は依頼により削除済み。Git上の旧名`ci-practice.yml`の削除と、新名`editmode-tests.yml`の追加は、採用版の改名としてセットで保存する。新名は現時点で未追跡表示だが、保存対象の採用版を指す。Day33の新しいCommit・Push・PR・マージは未実施
+* Day33の保存状態：本人のPush依頼により、Workflowの改名・PR設定・コメント整理と、本書の既存追記を含む更新を`973fb1fff6573ba96dfcc72d959d4cf113cde2ef`（EditMode用Workflowへ改名しPR起動を追加 / rename the EditMode workflow and enable PR checks）へCommit・Pushした。ブランチはci/editmode-tests、HEADとorigin先端は同コミットで、ステージは空。Gitは旧名から新名への改名として記録し、旧未採用案はローカルから削除済み。保存後のPush・PR CI結果と保存状態の追記を本書へ反映した。本人がCodex提示の日英タイトル・本文を使いPR #3を作成し、Codexがイベント・対象・件数・結果を確認した。PRはopenで、mainへのマージは未実施
 
 * 文書保存：本人承認により、確認済みの`AGENTS.md`とDay26終了時点の現在地文書だけを一時worktreeからmainへ直接コミット・Push済み。コミットは`9842c601416c8e329489b72ef6f3abf7770f3076`（学習方針と現在地を更新 / update learning guidance and project status）。Push後にGitHub側main・origin/main・ローカルmainの一致を確認し、一時worktreeは片付け済み
 * Day26の同期：作業フォルダは`C:\Users\draqu\Desktop\vivienne-qa-lab\game-set-automation-lab`、ブランチは`ci/editmode-tests`。本人の追加承認で、追跡対象の本文がmain保存版と一致し、ステージが空であることを確認して、CIブランチと比較基準をmainへ揃えた。この時点ではCIのHEAD・ローカルmain・origin/mainが上記9842c60で一致し、新しいコミット、CIブランチのPush、PR作成は行わなかった
@@ -118,8 +122,8 @@ IsInsideは範囲確認で、歩行可能かの判定ではない。IsWalkable�
 
 ## 未完了と今後の作業
 
-1. 採用版`.github/workflows/editmode-tests.yml`のPR起動設定・改名と現在地文書の差分・メッセージを共有し、本人の依頼後に旧名の削除と新名の追加をセットでCommit・Pushする。その後、PR作成を別の区切りとして相談し、実行契機がpull_requestであること・同一リポジトリPRでジョブが実行されること・EditMode対象と件数・結果を確認する。Push成功だけでPR実行成功とは扱わない。外部fork PRのスキップは式の確認のみで、実イベントでは未検証
-2. Milestone 2はPushによる成功・意図的な誤り検出・復旧後の成功と、本人の結果照合・調査入口の確認が揃った。ROADMAPはPush「または」Pull Requestで、両方を必須へ読み替えない。PR設定は追加確認として扱い、完了の区切りとMilestone 3への移行判断をWorkへ共有する。設定の条件はAIが提示した範囲があり、独力の設計・理解の定着とは区別する
+1. PR #3本文へのPRイベント14件成功の反映は完了。Push CI（run ID `42634161109`）とPR CI（run ID `42636502326`）はともに14件成功を確認済み。次はPRの最終レビューとマージ、ローカルmainの同期を行う。追加のCommit・Pushがあれば、その先端に対するCIを確認してからマージする。外部fork PRのスキップは未検証として区別する。
+2. Milestone 2はPushによる成功・意図的な誤り検出・復旧後の成功と、本人の結果照合・調査入口の確認が揃った。ROADMAPはPush「または」Pull Requestで、両方を必須へ読み替えない。追加した同一リポジトリPRの経路も14件成功を確認済み。外部forkの実行・スキップは未検証として区別し、完了の区切りとMilestone 3への移行判断をWorkへ共有する。設定の条件はAIが提示した範囲があり、独力の設計・理解の定着とは区別する
 3. 壁・マップ外への入力と向きだけ変更する命令は各1例を確認済み。他方向・非0ターンなどへの拡張は必要性を見て検討する。敵の占有判定・戦闘は現在の範囲外
 4. 必要ならテスト名とコメントを目的に合わせて整理する。FloorCellsWalkableは床・壁とYと行番号の対応を確認している。IsWalkableIsFalse内の地図説明コメントはコピー元の上下対応の説明が残っている
 5. Milestone 2の後、Milestone 3でUnity表示・入力接続、PlayModeテストの対象を検討する。最初のCIが使える段階以降は、実際に見つけた不便を本人が一つ選び、必要に応じて小さく改善して前後を確認する。困っていない箇所の改修や大きな機能追加は必須にしない
@@ -135,6 +139,7 @@ IsInsideは範囲確認で、歩行可能かの判定ではない。IsWalkable�
 * [TECH_ARCHITECTURE_v0.1.md](https://drive.google.com/file/d/10wfhZBM1yn0YHzlrLL0v2yc-4tp5_Ab0/view?usp=drivesdk)：4.2節にGameStateでの移動処理とB案の受け渡し方針・採用理由を記録済み
 * [Vivienne QA Labの記録フォルダ](https://drive.google.com/drive/folders/18TJtEXtzkT8-hLh6TFMAtqBlVua3gk5F)
 * [制作ログ（Day32）](https://docs.google.com/document/d/1-oN-uMUXcpd5hUMwt47563VG16-IDXDBVIuthrjFGkg/edit)：Day33に本人の予想・AIによるGit操作・終了後の結果確認を読み取り照合済み
+* [PR #3：EditModeテストのCIを導入](https://github.com/daiki-vivienne/game-set-automation-lab/pull/3)：本人がDay33に作成。Push・PRイベントの両方で14件成功、未マージ
 * [作業時間表](https://docs.google.com/spreadsheets/d/1He70CnsMwKe-eGSXBvuIYKwaueKuBBzZpusN-AjDOOc/edit)
 
 再開時はAGENTS.mdとこの文書を読み、Gitの状態・保存済みコード・Unityの確認状況を照合する。背景が必要なら、AGENTS.mdに従ってDriveの関連記録を読み取り確認する。制作ログ・復習資料・作業時間表の更新はChatGPT Workが担当し、この文書には作業時間を記載しない。

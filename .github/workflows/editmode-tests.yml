@@ -1,14 +1,22 @@
 # このファイルは、GitHub Actionsへ自動実行を依頼する設定。
 # GitHubが設定全体を読んで準備し、steps内の作業を上から順に実行する。
 # 「#」から後ろは説明コメント。設定の意味を振り返るために残している。
-name: CI Practice # Actions画面で使うWorkflow全体の表示名。
+name: EditMode Tests # Actions画面で使うWorkflow全体の表示名。
 
 on: # Workflowを起動するきっかけ。
   push: # GitHubへPushされたときに起動する。ローカルのCommitだけでは起動しない。
+  pull_request: #mainへ取り込む前にも起動する。
+    branches:
+      - main
 
 jobs: # 実行するジョブの設定をまとめる。
   editmode: # ジョブを区別する名前。この名前だけでEditModeテストが始まるわけではない。
     runs-on: ubuntu-24.04 # GitHub側の実行用PC。手元のWindowsを変更する設定ではない。
+    # Unity認証用Secretsが渡されない外部forkのPRでは、このジョブ全体をスキップするための条件。
+    # 左側は「起動契機がPRではない」。現在はPushでの実行を残す役割を持つ。
+    # 右側は「PR元のリポジトリ名と、このWorkflowがあるリポジトリ名が同じ」かを比較する。
+    # PR元はgithub.event.pull_request.head.repo.full_name、現在のリポジトリはgithub.repositoryから読む。
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
 
     # ジョブ全体で使うGitHubの操作権限。途中で実行する作業ではない。
     # permissionsを明示すると、省略した権限は原則noneになるため、読む許可も記載する。
@@ -21,7 +29,7 @@ jobs: # 実行するジョブの設定をまとめる。
     steps:
       - name: リポジトリをチェックアウト
         # プロジェクトのファイルを実行用PCへ取得する、GitHub公式のAction。
-        # 取得対象を省略しているので、今回のPushに対応するリポジトリ・コミットを使う。
+        # 取得対象を省略しているので、今回のPushまたはPRに対応するリポジトリ・コミットを使う。
         # @v7は使用するcheckout Actionの版。Unityの版とは別。
         uses: actions/checkout@v7
 

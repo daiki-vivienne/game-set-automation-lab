@@ -1,14 +1,14 @@
 # game-set-automation-lab 現在の状況
 
-最終更新：2026-11-10（Day33分の終了整理。PR #3を通常マージ・main同期済み、マージ後CIも14件成功）
+最終更新：2026-11-12（Milestone 3の仮プレイヤー1個にCoreの開始座標を反映し、画面で確認）
 
 ## 現在地と次回の開始点
 
-進行中の対象はROADMAPのMilestone 2「最初のCI」。Day30は本人が`.github/workflows/ci-practice.yml`へ、UnityのEditModeテスト実行・Secrets参照・実行条件・結果ファイル保存・ジョブ権限を追加した。項目名・値・部分例はCodexが提示し、本人が記述と字下げ・項目名の修正を行った。本人の依頼でCodexが振り返り用の説明コメントを追加し、コメント追加前後で設定内容が同じことを確認した。独力での設計・理解の定着とは区別する。
+ChatGPT WorkはMilestone 2「最初のCI」を完了と判断した。[Day33制作ログ](https://docs.google.com/document/d/1if7VTwKOo9Y5NqrglwYs_MqtObemm1pD_VEJb6zqOyk/edit)に、CI成功、意図的な誤りの検出と復旧、失敗調査の入口を確認した根拠を記録済み。PR #3の通常マージの統合点は `bdfa925`。Day33終了時のmain `d971451` の[EditMode CI](https://github.com/daiki-vivienne/game-set-automation-lab/actions/runs/42642933795)でも結果XMLで総数14・成功14・失敗0・スキップ0とArtifacts保存を確認済み。
 
-現在のWorkflowは、チェックアウト・メッセージ表示・Tests一覧・Unityテスト実行・結果保存の5手順。正常時の基準はDay30の[CI](https://github.com/daiki-vivienne/game-set-automation-lab/actions/runs/41873099355)の既存EditModeテスト14件成功・失敗0件・スキップ0件。Day32は本人がGameState.ChangeFacingへターン加算1行を一時追加し、既存テストによる誤り検出を試した。Codexが検証用コミット`95f4911`と、その1行をrevertした復旧コミット`8d9ad5c`を作成・Push済み。ゲーム処理は作業前と同じ内容に復旧しており、この検証でテスト期待値・Workflowは変更していない。Day33は別の変更としてPR起動設定を記述した。その後、本人の依頼で旧Codex案を削除し、本人作成の採用版を`ci-practice.yml`から`.github/workflows/editmode-tests.yml`へ改名、表示名を`EditMode Tests`にした。現在の同名ファイルは旧案ではなく採用版で、`973fb1f`へCommit・Push済み。
+現在はMilestone 3「Unityへ表示する動く骨組み」。`SampleScene` に仮プレイヤー `PlayerPreview` を置き、Presentationの `PlayerPositionPreview` が再生開始時に試作用 `GameState` の `X`・`Y` を表示の位置へ反映する。Coreの左下原点・右へX・上へYの座標をUnityのXY平面に対応させ、Zは0。本人がGameビューの箱とInspectorの位置 `(2, 1, 0)` を確認した。次は固定マップ・壁の仮表示。地形の歩行可否はCoreが担当し、キー入力と移動の接続は後続とする。
 
-初回CIではActionが`coverageEnabled: false`を`--no-coverageEnabled`へ変換し、CLIが拒否したため、`GAME_CI_COVERAGE_ENABLED: 'false'`をenvから渡す設定へ修正した。Day33は本人もDay32の2実行のログ内XMLを開き、一時変更側の13件成功・1件失敗（期待値0・実際値1）と復旧側の14件成功を照合し、向きだけ変更する処理のターン加算を既存テストが検出したと説明した。revertのCLI／Rider操作とreset・Undo Commitの違いは説明済みだが、本人による復旧操作は未実施。ROADMAPの実行契機はPush「または」Pull Requestで、PushによるMilestone 2の完成条件に対応する証拠は揃った。区切りと次Milestoneへの移行判断はWorkへ共有する。PR起動設定と改名は`973fb1f`へCommit・Push済み。新名のPush CI（run ID `42634161109`）で14件成功を確認した。その後、本人がGitHubからPR #3（ci/editmode-tests → main）を作成し、PRイベントのCI（run ID `42636502326`）でも14件成功を確認した。PR本文は本人の依頼でCodexが日英の確認結果を更新した。最終レビューは修正指摘なし。文書追記の`e3ea237`でもPush・PRの両CIが14件成功し、その後、本人がPR #3を通常マージした。統合コミット`bdfa925`へローカルmainを同期済み。マージ後のmain CI（run ID `42641348061`）も14件成功を確認済み。次はMilestone 2の区切りと、Milestone 3で最初に扱う範囲をWorkへ共有・相談する。
+開始時にローカルmain・origin/main・GitHub側mainの `d971451` 一致と作業ツリーがクリーンなことを確認した。同コミットからローカル作業ブランチ `feature/unity-position-preview` を作成。保存済みの `SampleScene` にはカメラ、ライト、Global Volumeがあり、PresentationにはCore参照付きの `Vivienne.Unity.asmdef` がある。その既存シーンとアセンブリ構成を使って、仮プレイヤーの表示位置を確認した。
 
 ## プロジェクトと環境
 
@@ -36,6 +36,8 @@ Unity・C#・自動テスト・CI/CDを学び、ゲームSET/SDETを目指す学
 固定マップと左右移動のテスト用地図は3行・横幅5。上下移動と壁・マップ外への入力には4行・横幅5の地図を使用し、各行は同じ長さ。本番マップの大きさ・配置を決めたものではない。上下移動の地図には縦に隣り合う床がある。マップ外のテストでは(4, 1)を床にした専用配置から(5, 1)への入力を試す。本番地図の外周を決めるものではなく、Coreの地図外への移動禁止ルールを確認するための配置である。高さと幅を異なる値にし、幅の処理が誤って行数を返しても区別できるようにしている。FloorCellsWalkableでは上段中央を壁、下段中央を床とし、上下の行を取り違えてもテストで区別できる配置にしている。
 
 ## 最新の確認結果
+
+* 2026-11-12：本人がUnity Editorの `SampleScene` をPlayし、Gameビューに立方体が見え、`PlayerPreview` のInspectorのPositionが `(2, 1, 0)` であることを確認した。試作用 `GameState` の開始座標は `(2, 1)`。保存済みシーンの立方体は `(0, 0, 0)` で、スクリプト参照は同スクリプトの `.meta` のGUIDと一致。今回の仮表示の確認は手動Play。新規の自動テスト実行は未実施。
 
 * Day33分のマージ後確認（2026-11-10）：本人がPR #3を通常マージし、統合コミットは`bdfa925043d82f74da560c161c11f8472e512962`。親コミットは元mainの`9842c60`と作業先端の`e3ea237`で、日々のコミット履歴を保持している。Codexがローカルmain・origin/mainと統合点の一致、統合点と作業先端の保存済みツリー一致を確認した。[mainのCI](https://github.com/daiki-vivienne/game-set-automation-lab/actions/runs/42641348061)はevent=push、head_branch=mainで起動し、ジョブeditmodeと5手順が成功した。ログ内XMLの対象`Vivienne.EditModeTests.dll`、test-case 14件、総数14・成功14・失敗0・スキップ0・inconclusive 0を確認し、`ChangeFacingKeepsPositionAndTurnCount`もPassed。成果物`editmode-test-results`（ID `13685752494`）の保存も確認した。これはマージ前の結果とは別の、統合後main上での実行結果。
 
@@ -126,11 +128,11 @@ IsInsideは範囲確認で、歩行可能かの判定ではない。IsWalkable�
 
 ## 未完了と今後の作業
 
-1. PR #3の通常マージとローカルmain同期、マージ後main CI（run ID `42641348061`）の対象・件数・結果・Artifacts確認は完了。Milestone 2の到達点とMilestone 3の最初の範囲をWorkへ共有・相談する。外部fork PRのスキップは未検証として区別する。
-2. Milestone 2はPushによる成功・意図的な誤り検出・復旧後の成功と、本人の結果照合・調査入口の確認が揃った。ROADMAPはPush「または」Pull Requestで、両方を必須へ読み替えない。追加した同一リポジトリPRの経路も14件成功を確認済み。外部forkの実行・スキップは未検証として区別し、完了の区切りとMilestone 3への移行判断をWorkへ共有する。設定の条件はAIが提示した範囲があり、独力の設計・理解の定着とは区別する
+1. 仮プレイヤー1個の位置をCoreの開始座標へ合わせる最初の区切りは手動Playで確認済み。次は固定マップから床・壁の情報を取得し、UnityのXY平面で表示する範囲と方法を相談する。
+2. キー入力と移動の接続、最小のGameEvent、接続を検証するPlayModeテストは後続の作業。外部fork PRのスキップは実イベントで未検証。
 3. 壁・マップ外への入力と向きだけ変更する命令は各1例を確認済み。他方向・非0ターンなどへの拡張は必要性を見て検討する。敵の占有判定・戦闘は現在の範囲外
 4. 必要ならテスト名とコメントを目的に合わせて整理する。FloorCellsWalkableは床・壁とYと行番号の対応を確認している。IsWalkableIsFalse内の地図説明コメントはコピー元の上下対応の説明が残っている
-5. Milestone 2の後、Milestone 3でUnity表示・入力接続、PlayModeテストの対象を検討する。最初のCIが使える段階以降は、実際に見つけた不便を本人が一つ選び、必要に応じて小さく改善して前後を確認する。困っていない箇所の改修や大きな機能追加は必須にしない
+5. 最初のCIが使える段階以降は、実際に見つけた不便を本人が一つ選び、必要に応じて小さく改善して前後を確認する。困っていない箇所の改修や大きな機能追加は必須にしない。
 6. ゲーム仕様書・テスト戦略書のリポジトリ内の配置、README追記、Botの導入時期は今後の検討事項
 
 行末の余分な空白などの体裁は後で見直す対象。未決のゲーム仕様や大きな設計判断は、選択肢と影響を整理してChatGPT Workで相談する。

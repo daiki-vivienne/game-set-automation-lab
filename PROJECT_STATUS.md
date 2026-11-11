@@ -1,14 +1,14 @@
 # game-set-automation-lab 現在の状況
 
-最終更新：2026-11-12（Milestone 3の仮プレイヤー1個にCoreの開始座標を反映し、画面で確認）
+最終更新：2026-11-12（Coreの開始座標に仮プレイヤーを置き、固定マップの壁1マスも画面で確認）
 
 ## 現在地と次回の開始点
 
 ChatGPT WorkはMilestone 2「最初のCI」を完了と判断した。[Day33制作ログ](https://docs.google.com/document/d/1if7VTwKOo9Y5NqrglwYs_MqtObemm1pD_VEJb6zqOyk/edit)に、CI成功、意図的な誤りの検出と復旧、失敗調査の入口を確認した根拠を記録済み。PR #3の通常マージの統合点は `bdfa925`。Day33終了時のmain `d971451` の[EditMode CI](https://github.com/daiki-vivienne/game-set-automation-lab/actions/runs/42642933795)でも結果XMLで総数14・成功14・失敗0・スキップ0とArtifacts保存を確認済み。
 
-現在はMilestone 3「Unityへ表示する動く骨組み」。`SampleScene` に仮プレイヤー `PlayerPreview` を置き、Presentationの `PlayerPositionPreview` が再生開始時に試作用 `GameState` の `X`・`Y` を表示の位置へ反映する。Coreの左下原点・右へX・上へYの座標をUnityのXY平面に対応させ、Zは0。本人がGameビューの箱とInspectorの位置 `(2, 1, 0)` を確認した。次は固定マップ・壁の仮表示。地形の歩行可否はCoreが担当し、キー入力と移動の接続は後続とする。
+現在はMilestone 3「Unityへ表示する動く骨組み」。`SampleScene` の仮プレイヤー `PlayerPreview` は、再生開始時に `GameState.X`・`Y` を読み、位置 `(2, 1, 0)` に表示する。壁の箱 `WallPreview` は、試作用の固定マップで `(4, 1)` の歩行可否を `FixedMap.IsWalkable` に問い合わせ、壁と判断できたときに位置 `(4, 1, 0)` へ置く。本人がGameビューとInspectorで両方を確認した。Coreの左下原点・右へX・上へYの座標をUnityのXY平面に対応させ、Zは0。地形の歩行可否はCoreが担当する。
 
-開始時にローカルmain・origin/main・GitHub側mainの `d971451` 一致と作業ツリーがクリーンなことを確認した。同コミットからローカル作業ブランチ `feature/unity-position-preview` を作成。保存済みの `SampleScene` にはカメラ、ライト、Global Volumeがあり、PresentationにはCore参照付きの `Vivienne.Unity.asmdef` がある。その既存シーンとアセンブリ構成を使って、仮プレイヤーの表示位置を確認した。
+開始時にローカルmain・origin/main・GitHub側mainの `d971451` 一致と作業ツリーがクリーンなことを確認した。同コミットからローカル作業ブランチ `feature/unity-position-preview` を作成。保存済みの `SampleScene` にはカメラ、ライト、Global Volumeがあり、PresentationにはCore参照付きの `Vivienne.Unity.asmdef` がある。仮プレイヤーの表示と確認結果は `22fecef` にローカルコミット済み。その次の区切りとして、同じシーンに壁1マスの表示を追加した。
 
 ## プロジェクトと環境
 
@@ -37,7 +37,7 @@ Unity・C#・自動テスト・CI/CDを学び、ゲームSET/SDETを目指す学
 
 ## 最新の確認結果
 
-* 2026-11-12：本人がUnity Editorの `SampleScene` をPlayし、Gameビューに立方体が見え、`PlayerPreview` のInspectorのPositionが `(2, 1, 0)` であることを確認した。試作用 `GameState` の開始座標は `(2, 1)`。保存済みシーンの立方体は `(0, 0, 0)` で、スクリプト参照は同スクリプトの `.meta` のGUIDと一致。今回の仮表示の確認は手動Play。新規の自動テスト実行は未実施。
+* 2026-11-12：本人がUnity Editorで `SampleScene` を手動Play。仮プレイヤーはGameビューに表示され、InspectorのPositionは `(2, 1, 0)`。壁を追加した後のPlayでは、プレイヤーと同じ高さで右側に壁の箱が見え、`WallPreview` のPositionは `(4, 1, 0)` と本人が報告し、提示画像でも確認した。シーンに保存された両スクリプト参照は対応する `.meta` のGUIDと一致。新規の自動テスト実行は未実施。
 
 * Day33分のマージ後確認（2026-11-10）：本人がPR #3を通常マージし、統合コミットは`bdfa925043d82f74da560c161c11f8472e512962`。親コミットは元mainの`9842c60`と作業先端の`e3ea237`で、日々のコミット履歴を保持している。Codexがローカルmain・origin/mainと統合点の一致、統合点と作業先端の保存済みツリー一致を確認した。[mainのCI](https://github.com/daiki-vivienne/game-set-automation-lab/actions/runs/42641348061)はevent=push、head_branch=mainで起動し、ジョブeditmodeと5手順が成功した。ログ内XMLの対象`Vivienne.EditModeTests.dll`、test-case 14件、総数14・成功14・失敗0・スキップ0・inconclusive 0を確認し、`ChangeFacingKeepsPositionAndTurnCount`もPassed。成果物`editmode-test-results`（ID `13685752494`）の保存も確認した。これはマージ前の結果とは別の、統合後main上での実行結果。
 
@@ -128,7 +128,7 @@ IsInsideは範囲確認で、歩行可能かの判定ではない。IsWalkable�
 
 ## 未完了と今後の作業
 
-1. 仮プレイヤー1個の位置をCoreの開始座標へ合わせる最初の区切りは手動Playで確認済み。次は固定マップから床・壁の情報を取得し、UnityのXY平面で表示する範囲と方法を相談する。
+1. 仮プレイヤーと壁1マスの位置は手動Playで確認済み。次は固定マップから床・壁の情報を取得し、複数マスをUnityのXY平面で表示する方法を相談する。
 2. キー入力と移動の接続、最小のGameEvent、接続を検証するPlayModeテストは後続の作業。外部fork PRのスキップは実イベントで未検証。
 3. 壁・マップ外への入力と向きだけ変更する命令は各1例を確認済み。他方向・非0ターンなどへの拡張は必要性を見て検討する。敵の占有判定・戦闘は現在の範囲外
 4. 必要ならテスト名とコメントを目的に合わせて整理する。FloorCellsWalkableは床・壁とYと行番号の対応を確認している。IsWalkableIsFalse内の地図説明コメントはコピー元の上下対応の説明が残っている

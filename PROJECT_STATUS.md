@@ -1,30 +1,45 @@
 # game-set-automation-lab 現在の状況
 
-最終更新 2026-11-12（`main` の文書整理）
+最終更新 2026-11-12（Day35の壁の複数マス表示を確認）
 
 ## 現在地と次の一手
 
-`main` には固定マップ上の移動・向き変更と、GitHub ActionsでのEditModeテストが統合済み。Milestone 2「最初のCI」を完了し、次はMilestone 3「Unityへ表示する動く骨組み」を進める。
+Milestone 3「Unityへ表示する動く骨組み」を進めている。Day35は固定マップの15マスを順に調べ、床・壁の判定をConsoleで照合した。`SampleScene` の手動Playで、地図の外周に壁の箱が並ぶことを確認した。
 
-Unityの表示試作は作業ブランチ `feature/unity-position-preview` で進行中。次は、固定マップの床・壁をUnityのXY平面に表示する。キー入力と移動の接続、GameEvent、接続を確かめるPlayModeテストは後続。
+次は、床の3マスにも壁と見分けられる表示を追加する。その後、文字地図とGameビューで配置を照合し、上段と下段が異なる地図で上下の向きを確認する。キー入力と移動の接続は、その表示確認の後に扱う。
 
 ## 実装済みと設計上の前提
 
-- **移動と状態**。Coreの `GameState.Move(direction, map)` は、入力方向を向き、歩ける場合に位置を更新してターンを1増やす。壁・地図外への入力や `ChangeFacing` では位置とターン数を維持する。地形判定は `FixedMap`、状態更新は `GameState` が担当する。既存のコンストラクターと初期状態テストを維持して移動を追加できるよう、呼び出し側で用意した同じ地図を移動時に渡す。[TECH_ARCHITECTURE §4.2](https://drive.google.com/file/d/10wfhZBM1yn0YHzlrLL0v2yc-4tp5_Ab0/view?usp=drivesdk)
-- **座標と地形**。原点は左下で、右へX、上へYが増える。文字地図は上から保存するため、`FixedMap` は座標が範囲内かを先に確認し、`Height - 1 - y` で行を選ぶ。`IsWalkable` は床で `true`、壁と地図外で `false` を返す。
-- **開発環境**。Unity 6.3 LTS（6000.3.24f1、Universal 3D／URP）、Rider、Unity Test Framework 1.6.0。CoreはUnityに依存せず、Unity側のPresentationから参照する。
+- **Core**（`Assets/_Project/Core`）の `GameState.Move(direction, map)` は、入力方向を向き、歩ける場合にだけ位置を更新してターンを1増やす。壁・地図外への入力や `ChangeFacing` では位置とターン数を維持する。地形判定は `FixedMap`、状態の更新は `GameState` が担当する。既存のコンストラクターと初期状態テストを維持して移動を追加できるよう、呼び出し側で用意した同じ地図を移動時に渡す設計を採用した。[TECH_ARCHITECTURE §4.2](https://drive.google.com/file/d/10wfhZBM1yn0YHzlrLL0v2yc-4tp5_Ab0/view?usp=drivesdk)
+- **座標と地形**は左下が原点で、右へX、上へYが増える。文字地図は上から保存するため、`FixedMap` は範囲内か確認してから `Height - 1 - y` で行を選ぶ。`IsWalkable` は床で `true`、壁と地図外で `false` を返す。複数マスの表示でこの判定を使う場合は、対象座標が地図内であることを確認する。
+- **Unity表示**（`Assets/_Project/Presentation`）はCoreを参照し、CoreはUnityに依存しない。`PlayerPositionPreview` は試作用 `GameState` のX・Yを仮プレイヤーの位置に使う。`WallPositionPreview` は `Start` で試作用 `FixedMap` を作り、`Height` と `Width` を使う2つの `for` で地図内の全座標を調べる。`IsWalkable` が `false` のマスに立方体を1個生成し、地図と同じX・Y、Z=0に置く。旧 `WallPreview` のMesh Rendererはオフにし、同じオブジェクトに付いたスクリプトが壁を生成する。
+- **開発環境**はUnity 6.3 LTS（6000.3.24f1、Universal 3D／URP）、Rider、Unity Test Framework 1.6.0。CoreのEditModeテストは `GameStateTests` 8件（初期状態・移動・向き）、`FixedMapTest` 6件（寸法・範囲・歩行可否）。
 
-## 確認結果
+## 最新の確認結果
 
 | 確認 | 対象と結果 |
 |---|---|
-| GitHub ActionsのEditMode（2026-11-12 JST） | 文書整理前の `main`（`0489ede`）で、`GameStateTests` 8件と `FixedMapTest` 6件が成功。計14件、失敗・スキップ0。成果物 `editmode-test-results` の保存を確認。[Actions実行](https://github.com/daiki-vivienne/game-set-automation-lab/actions/runs/43069590869)・[テスト集計](https://github.com/daiki-vivienne/game-set-automation-lab/runs/130695940882) |
-| ローカルのEditMode（Day25、2026-10-26分） | Unity Test RunnerでCoreの14件が成功。失敗・スキップ0。提示画像と保存済みXMLで確認した記録。[Day33版の確認記録](https://github.com/daiki-vivienne/game-set-automation-lab/blob/d9714518d0bbfedcd62eeedf69aabe4a3b382b96/PROJECT_STATUS.md) |
+| Unityの手動Play（Day35、2026-11-12） | 本人がConsoleで全3段それぞれのXが0〜4と出ることを確認。中央段は `False, True, True, True, False` で `#...#` と一致。Gameビューの画像で、外周の壁と中央のプレイヤー、床表示をまだ入れていない左右の空きマスを確認した。元の地図は上下段が同じため、上下の向きは未確認。 |
+| Unityの手動Play（Day34、2026-11-11分） | 本人が `SampleScene` を再生し、GameビューとInspectorで `PlayerPreview` が `(2, 1, 0)`、`WallPreview` が `(4, 1, 0)` に表示されることを確認。シーン内の両スクリプト参照と対応する `.meta` のGUIDも一致。[Day34制作ログ](https://docs.google.com/document/d/19pUtebgwESrCnsTunv1FVOKEEPr782qDvYTyKHCb9uE/edit) |
+| GitHub ActionsのEditMode（2026-11-12 JST） | `main` の用語報告ルール更新 `7e83e79` に対するPush CI。実行ログ内XMLで `GameStateTests` 8件、`FixedMapTest` 6件の計14件が成功。失敗・スキップ0。成果物 `editmode-test-results` の保存を確認。[Actions実行](https://github.com/daiki-vivienne/game-set-automation-lab/actions/runs/43208328027) |
+| ローカルのEditMode（Day25、2026-10-26分） | 本人がUnity Test RunnerでCoreの14件を実行し、成功14・失敗0・スキップ0。提示画像と保存済みXMLで確認した記録。[当時の結果を含むDay33版](https://github.com/daiki-vivienne/game-set-automation-lab/blob/d9714518d0bbfedcd62eeedf69aabe4a3b382b96/PROJECT_STATUS.md) |
 
-CIはPushと同一リポジトリから `main` へのPRでEditModeを実行済み。外部fork PRではUnityジョブをスキップする設定で、実イベントは未検証。[Workflow](.github/workflows/editmode-tests.yml)・[PR #3](https://github.com/daiki-vivienne/game-set-automation-lab/pull/3)
+Day35の表示変更はUnity Editorの手動Playで確認した。作業ブランチのEditMode CIは、GitHub Actionsで対象コミットと結果を照合する。
 
-## 保存状態と参照先
+## Gitと保存状態
 
-- Coreの移動・向き変更とEditModeテストは[PR #2](https://github.com/daiki-vivienne/game-set-automation-lab/pull/2)、CI設定は[PR #3](https://github.com/daiki-vivienne/game-set-automation-lab/pull/3)で `main` へ統合済み。
-- CIは意図的な誤りを1件検出し、復旧後に14件成功した。導入時の判断と失敗調査の記録。[Day33制作ログ](https://docs.google.com/document/d/1if7VTwKOo9Y5NqrglwYs_MqtObemm1pD_VEJb6zqOyk/edit)・[誤り検出のCI](https://github.com/daiki-vivienne/game-set-automation-lab/actions/runs/42377597976)・[復旧後のCI](https://github.com/daiki-vivienne/game-set-automation-lab/actions/runs/42377660368)
-- 開発順序、仕様・設計・テスト方針と過去の制作記録。[ROADMAP](https://drive.google.com/file/d/1jaU-5QqbKx3NrHswDS7wCpg1-ttMNNW7/view?usp=drivesdk)・[仕様・設計資料フォルダ](https://drive.google.com/drive/folders/1JPWF1LwqBv_yED0qeqgQlT1r14COcE1Q)・[TEST_STRATEGY §16・§23](https://drive.google.com/file/d/1FCNIBfNum6iua3B7nrhqTkZYCA-alcMy/view)・[Vivienne QA Labの記録フォルダ](https://drive.google.com/drive/folders/18TJtEXtzkT8-hLh6TFMAtqBlVua3gk5F)
+- 作業ブランチ `feature/unity-position-preview` はDay34の表示コミット `22fecef` と `9f09406` を保持し、`main` の文書整理と学習用語・Notion復習ノートの運用ルールを取り込み済み。Day35開始時の先端は `3759903`。Day35の壁表示の保存対象は `SampleScene.unity`、`WallPositionPreview.cs`、本書。
+- ローカル `main`・`origin/main`・GitHubの `main` は `7e83e79` で一致。
+- Unityが生成した `ProjectSettings/SceneTemplateSettings.json` は未追跡。
+
+## 未確認・後続作業
+
+- 床の表示と、上下段の異なる地図での位置・向きの確認が残っている。最小のGameEventと、入力・移動・表示の接続を確かめるPlayModeテストは後続。
+- CIはPushと同一リポジトリから `main` へのPRでEditModeを実行済み。外部fork PRではUnityジョブをスキップする設定で、実イベントは未検証。[Workflow](.github/workflows/editmode-tests.yml)・[PR #3](https://github.com/daiki-vivienne/game-set-automation-lab/pull/3)
+- Day34の保存済み差分には、Unityのシーン出力とプレビュースクリプトの行末空白が残っている。
+
+## 設計資料と過去の記録
+
+- 開発順序と決定済みの仕様・設計・テスト方針。[ROADMAP](https://drive.google.com/file/d/1jaU-5QqbKx3NrHswDS7wCpg1-ttMNNW7/view?usp=drivesdk)・[仕様・設計資料フォルダ](https://drive.google.com/drive/folders/1JPWF1LwqBv_yED0qeqgQlT1r14COcE1Q)・[TEST_STRATEGY §16・§23](https://drive.google.com/file/d/1FCNIBfNum6iua3B7nrhqTkZYCA-alcMy/view)
+- Milestone 2「最初のCI」は完了。向き変更に意図的な誤りを入れた実行で1件の失敗を検出し、復旧後に14件成功した。導入の経緯と確認内容は制作ログから追える。[Day33制作ログ](https://docs.google.com/document/d/1if7VTwKOo9Y5NqrglwYs_MqtObemm1pD_VEJb6zqOyk/edit)・[誤り検出のCI](https://github.com/daiki-vivienne/game-set-automation-lab/actions/runs/42377597976)・[復旧後のCI](https://github.com/daiki-vivienne/game-set-automation-lab/actions/runs/42377660368)
+- 過去の制作ログ、復習資料、作業時間表。[Vivienne QA Labの記録フォルダ](https://drive.google.com/drive/folders/18TJtEXtzkT8-hLh6TFMAtqBlVua3gk5F)・[作業時間表](https://docs.google.com/spreadsheets/d/1He70CnsMwKe-eGSXBvuIYKwaueKuBBzZpusN-AjDOOc/edit)

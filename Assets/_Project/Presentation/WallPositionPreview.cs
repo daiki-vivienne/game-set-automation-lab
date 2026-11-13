@@ -22,6 +22,13 @@ public class WallPositionPreview: MonoBehaviour
                     GameObject wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     wall.transform.position = new Vector3(x, y , 0);
                 }
+                else
+                {
+                    GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    floor.transform.position = new Vector3(x, y , 0);
+                    MeshRenderer floorRenderer = floor.GetComponent<MeshRenderer>();
+                    floorRenderer.material.color = Color.blue;
+                }
             }
         }
     }

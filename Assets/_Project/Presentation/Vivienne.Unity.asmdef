@@ -2,7 +2,8 @@
     "name": "Vivienne.Unity",
     "rootNamespace": "",
     "references": [
-        "GUID:6b2e7fefeb46e4c4fb1c15a9c806475b"
+        "GUID:6b2e7fefeb46e4c4fb1c15a9c806475b",
+        "GUID:75469ad4d38634e559750d17036d5f7c"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

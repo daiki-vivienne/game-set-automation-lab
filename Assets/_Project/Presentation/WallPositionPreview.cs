@@ -2,11 +2,18 @@ using UnityEngine;
 
 public class WallPositionPreview: MonoBehaviour
 {
+    private FixedMap map;
+
+    // 壁と床の表示に使った地図を、プレイヤーの移動判定にも渡せるようにする。
+    public FixedMap LevelMap
+    {
+        get { return map; }
+    }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         string[] mapRows = new string[] { "#####", "#...#", "#####" };
-        FixedMap map = new FixedMap( mapRows );
+        map = new FixedMap( mapRows );
         // Yが1つ決まるたびに、Xを左端から右端まで調べる。
         for (int y = 0; y < map.Height; y++)
         {

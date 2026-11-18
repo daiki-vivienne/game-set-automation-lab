@@ -244,6 +244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1886fc0aa932e3b4daca8fd5836cd49d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Vivienne.Unity::PlayerPositionPreview
+  wallpreview: {fileID: 1943343381}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0

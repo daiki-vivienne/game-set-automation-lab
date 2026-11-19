@@ -12,6 +12,7 @@ public class WallPositionPreview: MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        // 地図は上の行から書く。'#' は壁、'.' は歩ける床。
         string[] mapRows = new string[] { "#####", "#...#", "#####" };
         map = new FixedMap( mapRows );
         // Yが1つ決まるたびに、Xを左端から右端まで調べる。
@@ -32,7 +33,9 @@ public class WallPositionPreview: MonoBehaviour
                 else
                 {
                     GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    // 壁と床は Z=0 に並べ、プレイヤーの箱はその手前に表示する。
                     floor.transform.position = new Vector3(x, y , 0);
+                    // 箱を描画する MeshRenderer を取得し、壁と見分けられるように床を青くする。
                     MeshRenderer floorRenderer = floor.GetComponent<MeshRenderer>();
                     floorRenderer.material.color = Color.blue;
                 }

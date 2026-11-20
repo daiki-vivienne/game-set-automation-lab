@@ -77,13 +77,15 @@ public class GameState
         // 地形の判定は地図に任せる。壁や地図外なら、この中の状態更新を行わない。
         if (map.IsWalkable( nextX, nextY ))
         {
+            // 移動結果に出発地点も含めるため、座標を更新する前に現在位置を控える。
+            int beforeX = x;
+            int beforeY = y;
             // 歩けると分かった候補を現在位置に反映し、移動分の1ターンを加える。
             x = nextX;
             y = nextY;
             turnCount = turnCount + 1;
         }
     }
-
     // 移動せず、指定された方向を向く命令。地形を調べないため地図は受け取らない。
     // 位置とターン数は変更せず、変更後の向きはFacingから読み取る。
     public void ChangeFacing(Direction direction)
@@ -91,4 +93,4 @@ public class GameState
         facing = direction;
     }
         
-}    
+}

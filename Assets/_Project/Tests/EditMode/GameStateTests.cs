@@ -127,6 +127,19 @@ public class GameStateTests
         Assert.That(game.TurnCount, Is.EqualTo(0));
 
     }
-
+    // 右隣の床へ移動したとき、戻り値から移動元と移動先を確認できることを確かめる。
+    [Test]
+    public void MoveRightOnFloorReturnsBeforeAndAfterCoordinates()
+    {
+        string[] mapRows = new string[] { "#####", "#...#", "#####" };
+        FixedMap map = new FixedMap(mapRows);
+        GameState game = new GameState(2, 1, Direction.Up);
+        // Moveを1回呼び、返った移動結果のプロパティから座標を読む。
+        ActorMoved moveResult = game.Move(Direction.Right, map);
+        Assert.That(moveResult.FromX, Is.EqualTo(2));
+        Assert.That(moveResult.FromY, Is.EqualTo(1));
+        Assert.That(moveResult.ToX, Is.EqualTo(3));
+        Assert.That(moveResult.ToY, Is.EqualTo(1));
+    }
 
 }
